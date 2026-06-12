@@ -1,30 +1,6 @@
-{
-  "source": "TradingView",
-  "system": "Smart Learning Engine V1",
-  "indicator": "صائد الترند CALL & PUT Builder V4",
-  "السهم": "AAPL",
-  "ticker": "AAPL",
-  "الفريم": "30 دقيقة",
-  "timeframe": "30",
-  "السعر": "195.20",
-  "price": "195.20",
-  "الاتجاه": "CALL",
-  "signal": "CALL",
-  "score": "5",
-  "atr": "3.10",
-  "atr_pct": "1.80",
-  "avg_daily_move": "3.25",
-  "target1": "198.30",
-  "target2": "199.85",
-  "target3": "201.40",
-  "rf_state": "CALL",
-  "rqk_state": "CALL",
-  "rp_state": "CALL_BREAK",
-  "market_state": "BULL_TREND",
-  "is_sideways": "false",
-  "move_ok": "true",
-  "compass_call": "true",
-  "compass_put": "false",
-  "الحالة": "فرصة صعود مرشحة للمراجعة وليست توصية شراء أو بيع",
-  "status": "OPEN"
-}
+services:
+  - type: web
+    name: smart-learning-engine
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
