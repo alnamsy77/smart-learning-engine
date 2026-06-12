@@ -5,9 +5,11 @@ from learning import simple_learning_summary
 
 app = FastAPI(title="Smart Learning Engine V1.1")
 
+
 @app.on_event("startup")
 def startup():
     init_db()
+
 
 @app.get("/", response_class=HTMLResponse)
 def dashboard():
@@ -21,7 +23,6 @@ def dashboard():
         <body style="font-family:Arial;background:#111827;color:white;padding:30px">
         <h1>Smart Learning Engine V1.1</h1>
         <h2 style="color:#ef4444">خطأ في الاتصال بقاعدة البيانات</h2>
-        <p>تأكد من إضافة DATABASE_URL في Render.</p>
         <pre style="white-space:pre-wrap;background:#1f2937;padding:15px;border-radius:8px">{str(e)}</pre>
         </body>
         </html>
@@ -71,35 +72,50 @@ def dashboard():
     <body>
         <div class="container">
             <h1>🧠🔥 Smart Learning Engine V1.1</h1>
-            <div class="badge">Supabase PostgreSQL دائم ✅</div>
+            <div class="badge">Supabase PostgreSQL دائم ✅ | Webhook Active ✅ | Signals Saved ✅</div>
             <p class="small">لوحة استقبال وتحليل إشارات TradingView.</p>
+
             <div class="cards">
                 <div class="card">إجمالي الإشارات<div class="num">{stats['total']}</div></div>
                 <div class="card">CALL<div class="num call">{stats['call_count']}</div></div>
                 <div class="card">PUT<div class="num put">{stats['put_count']}</div></div>
                 <div class="card">OPEN<div class="num">{stats['open_count']}</div></div>
             </div>
+
             <div class="learning">
                 <h2>🧠 قراءة التعلم المبدئية</h2>
                 <p>{learning.get('message')}</p>
                 <p>متوسط الجودة: <b>{learning.get('avg_score', '-')}</b></p>
                 <p>{learning.get('best_score_note')}</p>
                 <p>{learning.get('risk_note')}</p>
+                <p>✅ تم استقبال وحفظ الإشارات بنجاح. مرحلة WIN/LOSS هي المرحلة القادمة بعد ربط متابعة السعر.</p>
             </div>
+
             <h2>آخر الإشارات</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th><th>الوقت</th><th>السهم</th><th>الإشارة</th><th>الفريم</th>
-                        <th>السعر</th><th>Score</th><th>ATR%</th><th>حالة السوق</th><th>النتيجة</th>
+                        <th>ID</th>
+                        <th>الوقت</th>
+                        <th>السهم</th>
+                        <th>الإشارة</th>
+                        <th>الفريم</th>
+                        <th>السعر</th>
+                        <th>Score</th>
+                        <th>ATR%</th>
+                        <th>حالة السوق</th>
+                        <th>النتيجة</th>
                     </tr>
                 </thead>
-                <tbody>{html_rows}</tbody>
+                <tbody>
+                    {html_rows}
+                </tbody>
             </table>
         </div>
     </body>
     </html>
     """
+
 
 @app.post("/webhook/tradingview")
 async def tradingview_webhook(request: Request):
@@ -107,16 +123,36 @@ async def tradingview_webhook(request: Request):
         data = await request.json()
     except Exception:
         raw = await request.body()
-        return JSONResponse(status_code=400, content={"ok": False, "error": "Invalid JSON", "raw": raw.decode("utf-8", errors="ignore")})
+        return JSONResponse(
+            status_code=400,
+            content={
+                "ok": False,
+                "error": "Invalid JSON",
+                "raw": raw.decode("utf-8", errors="ignore")
+            }
+        )
+
     try:
         inserted_id = insert_signal(data)
-        return {"ok": True, "message": "Signal saved permanently in Supabase", "id": inserted_id}
+        return {
+            "ok": True,
+            "message": "Signal saved permanently in Supabase",
+            "id": inserted_id
+        }
     except Exception as e:
-        return JSONResponse(status_code=500, content={"ok": False, "error": str(e)})
+        return JSONResponse(
+            status_code=500,
+            content={
+                "ok": False,
+                "error": str(e)
+            }
+        )
+
 
 @app.get("/api/signals")
 def api_signals():
     return fetch_recent(100)
+
 
 @app.get("/api/stats")
 def api_stats():
