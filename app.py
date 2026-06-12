@@ -51,6 +51,7 @@ def dashboard():
         result = str(r.get("result") or "OPEN").upper()
 
         signal_class = "call" if signal == "CALL" else "put" if signal == "PUT" else ""
+
         result_class = (
             "win" if result == "WIN"
             else "loss" if result == "LOSS"
@@ -99,7 +100,7 @@ def dashboard():
                 padding:24px;
             }}
             .container {{
-                max-width:1350px;
+                max-width:1400px;
                 margin:auto;
             }}
             h1 {{
@@ -125,7 +126,7 @@ def dashboard():
             }}
             .cards {{
                 display:grid;
-                grid-template-columns:repeat(6,1fr);
+                grid-template-columns:repeat(7,1fr);
                 gap:12px;
                 margin-bottom:18px;
             }}
@@ -144,13 +145,6 @@ def dashboard():
                 font-size:30px;
                 font-weight:bold;
                 margin-top:8px;
-            }}
-            .learning {{
-                background:#172554;
-                border:1px solid #2563eb;
-                border-radius:14px;
-                padding:18px;
-                margin-bottom:18px;
             }}
             table {{
                 width:100%;
@@ -192,11 +186,7 @@ def dashboard():
                 color:#facc15;
                 font-weight:bold;
             }}
-            .small {{
-                color:#9ca3af;
-                font-size:13px;
-            }}
-            @media (max-width: 1000px) {{
+            @media (max-width: 1100px) {{
                 .cards {{
                     grid-template-columns:repeat(2,1fr);
                 }}
@@ -209,7 +199,7 @@ def dashboard():
     <body>
         <div class="container">
             <h1>🧠🔥 لوحة محرك التعلم الذكي</h1>
-            <div class="badge">Supabase ✅ | Webhook ✅ | TradingView Signals ✅</div>
+            <div class="badge">النظام يعمل ✅ | استقبال الإشارات فعال ✅</div>
             <p class="subtitle">لوحة متابعة وتحليل إشارات الأسهم القادمة من TradingView.</p>
 
             <div class="cards">
@@ -236,6 +226,11 @@ def dashboard():
                 <div class="card">
                     <div class="card-title">صفقات رابحة</div>
                     <div class="num win">{win_count}</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">صفقات خاسرة</div>
+                    <div class="num loss">{loss_count}</div>
                 </div>
 
                 <div class="card">
