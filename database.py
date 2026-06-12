@@ -5,14 +5,17 @@ import psycopg2.extras
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+
 def get_conn():
     if not DATABASE_URL:
         raise RuntimeError("DATABASE_URL is missing. Add it in Render Environment Variables.")
     return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
 
+
 def init_db():
     conn = get_conn()
     cur = conn.cursor()
+
     cur.execute("""
     CREATE TABLE IF NOT EXISTS signals (
         id SERIAL PRIMARY KEY,
@@ -42,9 +45,30 @@ def init_db():
         raw_json JSONB
     );
     """)
+
+    cur.execute("""
+    ALTER TABLE signals
+    ADD COLUMN IF NOT EXISTS trade_id TEXT,
+    ADD COLUMN IF NOT EXISTS event TEXT DEFAULT 'OPEN',
+    ADD COLUMN IF NOT EXISTS stop_loss NUMERIC,
+    ADD COLUMN IF NOT EXISTS target1_hit BOOLEAN DEFAULT FALSE,
+    ADD COLUMN IF NOT EXISTS target2_hit BOOLEAN DEFAULT FALSE,
+    ADD COLUMN IF NOT EXISTS target3_hit BOOLEAN DEFAULT FALSE,
+    ADD COLUMN IF NOT EXISTS target1_hit_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS target2_hit_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS target3_hit_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS closed_at TIMESTAMPTZ;
+    """)
+
+    cur.execute("""
+    CREATE INDEX IF NOT EXISTS idx_signals_trade_id
+    ON signals (trade_id);
+    """)
+
     conn.commit()
     cur.close()
     conn.close()
+
 
 def to_float(value, default=None):
     try:
@@ -54,6 +78,7 @@ def to_float(value, default=None):
     except Exception:
         return default
 
+
 def to_int(value, default=None):
     try:
         if value is None or value == "":
@@ -62,24 +87,141 @@ def to_int(value, default=None):
     except Exception:
         return default
 
-def insert_signal(data: dict):
+
+def normalize_event(data):
+    event = data.get("event") or data.get("status") or "OPEN"
+    return str(event).upper()
+
+
+def build_trade_id(data):
+    trade_id = data.get("trade_id")
+    if trade_id:
+        return str(trade_id)
+
+    ticker = data.get("ticker") or data.get("السهم") or "UNKNOWN"
+    timeframe = data.get("timeframe") or data.get("الفريم") or "NA"
+    signal = data.get("signal") or data.get("الاتجاه") or "NA"
+    price = data.get("price") or data.get("السعر") or "NA"
+
+    return f"{ticker}_{timeframe}_{signal}_{price}"
+
+
+def update_trade_event(data: dict):
+    trade_id = build_trade_id(data)
+    event = normalize_event(data)
+
     conn = get_conn()
     cur = conn.cursor()
+
+    if event == "TARGET1_HIT":
+        cur.execute("""
+        UPDATE signals
+        SET
+            event = %s,
+            status = 'TARGET1_HIT',
+            result = 'WIN',
+            target1_hit = TRUE,
+            target1_hit_at = COALESCE(target1_hit_at, NOW()),
+            raw_json = %s
+        WHERE trade_id = %s
+        RETURNING id;
+        """, (event, json.dumps(data, ensure_ascii=False), trade_id))
+
+    elif event == "TARGET2_HIT":
+        cur.execute("""
+        UPDATE signals
+        SET
+            event = %s,
+            status = 'TARGET2_HIT',
+            result = 'WIN',
+            target1_hit = TRUE,
+            target2_hit = TRUE,
+            target1_hit_at = COALESCE(target1_hit_at, NOW()),
+            target2_hit_at = COALESCE(target2_hit_at, NOW()),
+            raw_json = %s
+        WHERE trade_id = %s
+        RETURNING id;
+        """, (event, json.dumps(data, ensure_ascii=False), trade_id))
+
+    elif event == "TARGET3_HIT":
+        cur.execute("""
+        UPDATE signals
+        SET
+            event = %s,
+            status = 'TARGET3_HIT',
+            result = 'WIN',
+            target1_hit = TRUE,
+            target2_hit = TRUE,
+            target3_hit = TRUE,
+            target1_hit_at = COALESCE(target1_hit_at, NOW()),
+            target2_hit_at = COALESCE(target2_hit_at, NOW()),
+            target3_hit_at = COALESCE(target3_hit_at, NOW()),
+            closed_at = COALESCE(closed_at, NOW()),
+            raw_json = %s
+        WHERE trade_id = %s
+        RETURNING id;
+        """, (event, json.dumps(data, ensure_ascii=False), trade_id))
+
+    elif event == "LOSS":
+        cur.execute("""
+        UPDATE signals
+        SET
+            event = %s,
+            status = 'LOSS',
+            result = 'LOSS',
+            closed_at = COALESCE(closed_at, NOW()),
+            raw_json = %s
+        WHERE trade_id = %s
+        RETURNING id;
+        """, (event, json.dumps(data, ensure_ascii=False), trade_id))
+
+    else:
+        cur.close()
+        conn.close()
+        return None
+
+    row = cur.fetchone()
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    if row:
+        return row["id"]
+    return None
+
+
+def insert_signal(data: dict):
+    event = normalize_event(data)
+
+    if event in ["TARGET1_HIT", "TARGET2_HIT", "TARGET3_HIT", "LOSS"]:
+        updated_id = update_trade_event(data)
+        if updated_id:
+            return updated_id
+
+    trade_id = build_trade_id(data)
+
+    conn = get_conn()
+    cur = conn.cursor()
+
     cur.execute("""
     INSERT INTO signals (
-        ticker, signal, timeframe, price, score, atr, atr_pct,
-        avg_daily_move, target1, target2, target3, rf_state, rqk_state,
-        rp_state, market_state, is_sideways, move_ok, compass_call,
-        compass_put, indicator, status, result, raw_json
+        trade_id, event, ticker, signal, timeframe, price, score, atr, atr_pct,
+        avg_daily_move, target1, target2, target3, stop_loss,
+        rf_state, rqk_state, rp_state, market_state, is_sideways, move_ok,
+        compass_call, compass_put, indicator, status, result, raw_json
     )
     VALUES (
-        %(ticker)s, %(signal)s, %(timeframe)s, %(price)s, %(score)s, %(atr)s, %(atr_pct)s,
-        %(avg_daily_move)s, %(target1)s, %(target2)s, %(target3)s, %(rf_state)s, %(rqk_state)s,
-        %(rp_state)s, %(market_state)s, %(is_sideways)s, %(move_ok)s, %(compass_call)s,
-        %(compass_put)s, %(indicator)s, %(status)s, %(result)s, %(raw_json)s
+        %(trade_id)s, %(event)s, %(ticker)s, %(signal)s, %(timeframe)s, %(price)s,
+        %(score)s, %(atr)s, %(atr_pct)s, %(avg_daily_move)s,
+        %(target1)s, %(target2)s, %(target3)s, %(stop_loss)s,
+        %(rf_state)s, %(rqk_state)s, %(rp_state)s, %(market_state)s,
+        %(is_sideways)s, %(move_ok)s, %(compass_call)s, %(compass_put)s,
+        %(indicator)s, %(status)s, %(result)s, %(raw_json)s
     )
     RETURNING id;
     """, {
+        "trade_id": trade_id,
+        "event": event,
         "ticker": data.get("ticker") or data.get("السهم"),
         "signal": data.get("signal") or data.get("الاتجاه"),
         "timeframe": data.get("timeframe") or data.get("الفريم"),
@@ -91,6 +233,7 @@ def insert_signal(data: dict):
         "target1": to_float(data.get("target1")),
         "target2": to_float(data.get("target2")),
         "target3": to_float(data.get("target3")),
+        "stop_loss": to_float(data.get("stop_loss")),
         "rf_state": data.get("rf_state"),
         "rqk_state": data.get("rqk_state"),
         "rp_state": data.get("rp_state"),
@@ -104,11 +247,13 @@ def insert_signal(data: dict):
         "result": "OPEN",
         "raw_json": json.dumps(data, ensure_ascii=False)
     })
+
     inserted_id = cur.fetchone()["id"]
     conn.commit()
     cur.close()
     conn.close()
     return inserted_id
+
 
 def fetch_recent(limit=100):
     conn = get_conn()
@@ -119,22 +264,49 @@ def fetch_recent(limit=100):
     conn.close()
     return rows
 
+
 def fetch_stats():
     conn = get_conn()
     cur = conn.cursor()
+
     cur.execute("SELECT COUNT(*) AS c FROM signals")
     total = cur.fetchone()["c"]
+
     cur.execute("SELECT COUNT(*) AS c FROM signals WHERE signal='CALL'")
     call_count = cur.fetchone()["c"]
+
     cur.execute("SELECT COUNT(*) AS c FROM signals WHERE signal='PUT'")
     put_count = cur.fetchone()["c"]
+
     cur.execute("SELECT COUNT(*) AS c FROM signals WHERE result='OPEN'")
     open_count = cur.fetchone()["c"]
+
+    cur.execute("SELECT COUNT(*) AS c FROM signals WHERE result='WIN'")
+    win_count = cur.fetchone()["c"]
+
+    cur.execute("SELECT COUNT(*) AS c FROM signals WHERE result='LOSS'")
+    loss_count = cur.fetchone()["c"]
+
+    cur.execute("SELECT COUNT(*) AS c FROM signals WHERE target1_hit = TRUE")
+    target1_hit = cur.fetchone()["c"]
+
+    cur.execute("SELECT COUNT(*) AS c FROM signals WHERE target2_hit = TRUE")
+    target2_hit = cur.fetchone()["c"]
+
+    cur.execute("SELECT COUNT(*) AS c FROM signals WHERE target3_hit = TRUE")
+    target3_hit = cur.fetchone()["c"]
+
     cur.close()
     conn.close()
+
     return {
         "total": total,
         "call_count": call_count,
         "put_count": put_count,
         "open_count": open_count,
+        "win_count": win_count,
+        "loss_count": loss_count,
+        "target1_hit": target1_hit,
+        "target2_hit": target2_hit,
+        "target3_hit": target3_hit,
     }
