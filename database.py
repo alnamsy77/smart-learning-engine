@@ -12,6 +12,13 @@ def get_conn():
     return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
 
 
+def pct(part, total):
+    try:
+        return round((part / total) * 100, 1) if total > 0 else 0
+    except Exception:
+        return 0
+
+
 def init_db():
     conn = get_conn()
     cur = conn.cursor()
@@ -265,6 +272,35 @@ def fetch_recent(limit=100):
     return rows
 
 
+def best_group(cur, column):
+    cur.execute(f"""
+        SELECT
+            {column} AS name,
+            COUNT(*) AS total,
+            COUNT(*) FILTER (WHERE result = 'WIN') AS wins,
+            COUNT(*) FILTER (WHERE result = 'LOSS') AS losses,
+            COUNT(*) FILTER (WHERE target1_hit = TRUE) AS target1_hits,
+            ROUND(
+                CASE
+                    WHEN COUNT(*) FILTER (WHERE result IN ('WIN','LOSS')) > 0
+                    THEN (COUNT(*) FILTER (WHERE result = 'WIN')::numeric /
+                          COUNT(*) FILTER (WHERE result IN ('WIN','LOSS'))::numeric) * 100
+                    ELSE 0
+                END, 1
+            ) AS win_rate
+        FROM signals
+        WHERE {column} IS NOT NULL
+          AND {column}::text <> ''
+        GROUP BY {column}
+        ORDER BY win_rate DESC, wins DESC, target1_hits DESC, total DESC
+        LIMIT 1
+    """)
+    row = cur.fetchone()
+    if not row:
+        return {"name": "-", "win_rate": 0, "total": 0, "wins": 0, "losses": 0, "target1_hits": 0}
+    return dict(row)
+
+
 def fetch_stats():
     conn = get_conn()
     cur = conn.cursor()
@@ -296,6 +332,23 @@ def fetch_stats():
     cur.execute("SELECT COUNT(*) AS c FROM signals WHERE target3_hit = TRUE")
     target3_hit = cur.fetchone()["c"]
 
+    cur.execute("SELECT COUNT(*) AS c FROM signals WHERE signal='CALL' AND result='WIN'")
+    call_wins = cur.fetchone()["c"]
+
+    cur.execute("SELECT COUNT(*) AS c FROM signals WHERE signal='CALL' AND result IN ('WIN','LOSS')")
+    call_closed = cur.fetchone()["c"]
+
+    cur.execute("SELECT COUNT(*) AS c FROM signals WHERE signal='PUT' AND result='WIN'")
+    put_wins = cur.fetchone()["c"]
+
+    cur.execute("SELECT COUNT(*) AS c FROM signals WHERE signal='PUT' AND result IN ('WIN','LOSS')")
+    put_closed = cur.fetchone()["c"]
+
+    best_score = best_group(cur, "score")
+    best_market_state = best_group(cur, "market_state")
+    best_timeframe = best_group(cur, "timeframe")
+    best_ticker = best_group(cur, "ticker")
+
     cur.close()
     conn.close()
 
@@ -309,4 +362,10 @@ def fetch_stats():
         "target1_hit": target1_hit,
         "target2_hit": target2_hit,
         "target3_hit": target3_hit,
+        "call_win_rate": pct(call_wins, call_closed),
+        "put_win_rate": pct(put_wins, put_closed),
+        "best_score": best_score,
+        "best_market_state": best_market_state,
+        "best_timeframe": best_timeframe,
+        "best_ticker": best_ticker,
     }
