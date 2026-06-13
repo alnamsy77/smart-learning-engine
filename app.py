@@ -199,7 +199,32 @@ def admin_dashboard(request: Request):
     if not is_logged_in(request):
         return RedirectResponse("/login", status_code=302)
 
-    return """
+    insights = get_learning_insights()
+
+    insight_map = {
+        item.get("insight_key"): item
+        for item in insights
+    }
+
+    best_score = insight_map.get("best_score_range", {})
+    best_market = insight_map.get("best_market_state", {})
+    best_timeframe = insight_map.get("best_timeframe", {})
+    best_ticker = insight_map.get("best_ticker", {})
+
+    best_score_title = best_score.get("title", "لا توجد بيانات بعد")
+    best_score_value = best_score.get("value", "-")
+
+    best_market_title = best_market.get("title", "لا توجد بيانات بعد")
+    best_market_value = best_market.get("value", "-")
+
+    best_timeframe_title = best_timeframe.get("title", "لا توجد بيانات بعد")
+    best_timeframe_value = best_timeframe.get("value", "-")
+
+    best_ticker_title = best_ticker.get("title", "لا توجد بيانات بعد")
+    best_ticker_value = best_ticker.get("value", "-")
+
+    
+    return f"""
     <html dir="rtl">
     <head>
         <meta charset="utf-8">
@@ -242,15 +267,12 @@ def admin_dashboard(request: Request):
         <div class="card">
             <h2>🧠 محرك التعلم الذكي</h2>
 
-            <ul>
-                <li>أفضل درجة جودة</li>
-                <li>أفضل ظروف سوق</li>
-                <li>أفضل ATR%</li>
-                <li>أفضل فريم</li>
-                <li>أفضل سهم</li>
-                <li>أسباب الخسائر</li>
-                <li>توصيات تطوير المؤشر</li>
-            </ul>
+           <ul>
+    <li>{best_score_title} — نسبة النجاح: {best_score_value}%</li>
+    <li>{best_market_title} — نسبة النجاح: {best_market_value}%</li>
+    <li>{best_timeframe_title} — نسبة النجاح: {best_timeframe_value}%</li>
+    <li>{best_ticker_title} — نسبة النجاح: {best_ticker_value}%</li>
+</ul>
         </div>
 
         <div class="card">
