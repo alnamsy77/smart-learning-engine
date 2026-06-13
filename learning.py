@@ -237,3 +237,74 @@ def learn_best_timeframe():
         "best_timeframe": best_timeframe,
         "win_rate": round(best_rate, 1)
     }
+
+
+def learn_best_ticker():
+
+    rows = fetch_recent(1000)
+
+    closed = [
+        r for r in rows
+        if r.get("result") in ["WIN", "LOSS"]
+    ]
+
+    if len(closed) < 10:
+        return {
+            "status": "waiting",
+            "message": "لا توجد صفقات مغلقة كافية"
+        }
+
+    tickers = {}
+
+    for row in closed:
+
+        ticker = row.get("ticker")
+
+        if not ticker:
+            continue
+
+        if ticker not in tickers:
+            tickers[ticker] = {
+                "wins": 0,
+                "losses": 0
+            }
+
+        if row["result"] == "WIN":
+            tickers[ticker]["wins"] += 1
+        else:
+            tickers[ticker]["losses"] += 1
+
+    best_ticker = None
+    best_rate = 0
+
+    for ticker, stats in tickers.items():
+
+        total = stats["wins"] + stats["losses"]
+
+        if total < 3:
+            continue
+
+        rate = (stats["wins"] / total) * 100
+
+        if rate > best_rate:
+            best_rate = rate
+            best_ticker = ticker
+
+    if best_ticker:
+
+        save_learning_insight(
+            insight_key="best_ticker",
+            insight_type="ticker",
+            title=f"أفضل أصل أداء هو {best_ticker}",
+            value=round(best_rate, 1),
+            details={
+                "ticker": best_ticker,
+                "win_rate": round(best_rate, 1)
+            }
+        )
+
+    return {
+        "status": "success",
+        "best_ticker": best_ticker,
+        "win_rate": round(best_rate, 1)
+    }
