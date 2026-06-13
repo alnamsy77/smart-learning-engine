@@ -308,3 +308,77 @@ def learn_best_ticker():
         "best_ticker": best_ticker,
         "win_rate": round(best_rate, 1)
     }
+
+
+def learn_best_atr_range():
+
+    rows = fetch_recent(1000)
+
+    closed = [
+        r for r in rows
+        if r.get("result") in ["WIN", "LOSS"]
+    ]
+
+    if len(closed) < 10:
+        return {
+            "status": "waiting",
+            "message": "لا توجد صفقات مغلقة كافية"
+        }
+
+    atr_groups = {}
+
+    for row in closed:
+
+        atr_pct = row.get("atr_pct")
+
+        if atr_pct is None:
+            continue
+
+        bucket = int(float(atr_pct) / 1) * 1
+        bucket_name = f"{bucket}-{bucket + 1}%"
+
+        if bucket_name not in atr_groups:
+            atr_groups[bucket_name] = {
+                "wins": 0,
+                "losses": 0
+            }
+
+        if row["result"] == "WIN":
+            atr_groups[bucket_name]["wins"] += 1
+        else:
+            atr_groups[bucket_name]["losses"] += 1
+
+    best_bucket = None
+    best_rate = 0
+
+    for bucket_name, stats in atr_groups.items():
+
+        total = stats["wins"] + stats["losses"]
+
+        if total < 3:
+            continue
+
+        rate = (stats["wins"] / total) * 100
+
+        if rate > best_rate:
+            best_rate = rate
+            best_bucket = bucket_name
+
+    if best_bucket:
+
+        save_learning_insight(
+            insight_key="best_atr_range",
+            insight_type="atr_pct",
+            title=f"أفضل نطاق ATR% هو {best_bucket}",
+            value=round(best_rate, 1),
+            details={
+                "atr_range": best_bucket,
+                "win_rate": round(best_rate, 1)
+            }
+        )
+
+    return {
+        "status": "success",
+        "best_atr_range": best_bucket,
+        "win_rate": round(best_rate, 1)
+    }
