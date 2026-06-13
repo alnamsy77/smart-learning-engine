@@ -167,3 +167,73 @@ def learn_best_market_state():
         "best_market_state": best_state,
         "win_rate": round(best_rate, 1)
     }
+
+def learn_best_timeframe():
+
+    rows = fetch_recent(1000)
+
+    closed = [
+        r for r in rows
+        if r.get("result") in ["WIN", "LOSS"]
+    ]
+
+    if len(closed) < 10:
+        return {
+            "status": "waiting",
+            "message": "لا توجد صفقات مغلقة كافية"
+        }
+
+    timeframes = {}
+
+    for row in closed:
+
+        timeframe = row.get("timeframe")
+
+        if not timeframe:
+            continue
+
+        if timeframe not in timeframes:
+            timeframes[timeframe] = {
+                "wins": 0,
+                "losses": 0
+            }
+
+        if row["result"] == "WIN":
+            timeframes[timeframe]["wins"] += 1
+        else:
+            timeframes[timeframe]["losses"] += 1
+
+    best_timeframe = None
+    best_rate = 0
+
+    for timeframe, stats in timeframes.items():
+
+        total = stats["wins"] + stats["losses"]
+
+        if total < 3:
+            continue
+
+        rate = (stats["wins"] / total) * 100
+
+        if rate > best_rate:
+            best_rate = rate
+            best_timeframe = timeframe
+
+    if best_timeframe:
+
+        save_learning_insight(
+            insight_key="best_timeframe",
+            insight_type="timeframe",
+            title=f"أفضل فريم أداء هو {best_timeframe}",
+            value=round(best_rate, 1),
+            details={
+                "timeframe": best_timeframe,
+                "win_rate": round(best_rate, 1)
+            }
+        )
+
+    return {
+        "status": "success",
+        "best_timeframe": best_timeframe,
+        "win_rate": round(best_rate, 1)
+    }
