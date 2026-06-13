@@ -1,15 +1,101 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from database import init_db, insert_signal, fetch_recent, fetch_stats
 from learning import simple_learning_summary
+import os
+import secrets
 
 app = FastAPI(title="Smart Learning Engine Dashboard")
 
+# =========================
+# Admin Login Settings
+# =========================
+
+ADMIN_USER = os.getenv("ADMIN_USER", "owner")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "123456")
+
+SESSION_TOKEN = secrets.token_urlsafe(32)
+
+# =========================
+# Startup
+# =========================
 
 @app.on_event("startup")
 def startup():
     init_db()
 
+# =========================
+# Login Helpers
+# =========================
+
+def is_logged_in(request: Request):
+    return request.cookies.get("admin_session") == SESSION_TOKEN
+
+
+@app.get("/login", response_class=HTMLResponse)
+def login_page():
+    return """
+    <html dir="rtl">
+    <head>
+        <title>تسجيل دخول المالك</title>
+        <style>
+            body{
+                background:#020617;
+                color:white;
+                font-family:Arial;
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                height:100vh;
+            }
+            .box{
+                background:#111827;
+                padding:30px;
+                border-radius:15px;
+                width:350px;
+            }
+            input{
+                width:100%;
+                padding:10px;
+                margin-top:10px;
+                margin-bottom:15px;
+            }
+            button{
+                width:100%;
+                padding:10px;
+                background:#f97316;
+                border:none;
+                color:white;
+                cursor:pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="box">
+            <h2>🔐 دخول لوحة المالك</h2>
+            <form method="post" action="/login">
+                <input name="username" placeholder="اسم المستخدم">
+                <input name="password" type="password" placeholder="كلمة المرور">
+                <button type="submit">دخول</button>
+            </form>
+        </div>
+    </body>
+    </html>
+    """
+
+
+@app.post("/login")
+def login(username: str = Form(...), password: str = Form(...)):
+    if username == ADMIN_USER and password == ADMIN_PASSWORD:
+        response = RedirectResponse("/admin", status_code=302)
+        response.set_cookie(
+            key="admin_session",
+            value=SESSION_TOKEN,
+            httponly=True
+        )
+        return response
+
+    return RedirectResponse("/login", status_code=302)
 
 def pct(part, total):
     try:
@@ -88,6 +174,83 @@ def group_total(group):
         return 0
     return group.get("total", 0) or 0
 
+
+# =========================
+# Admin Dashboard
+# =========================
+
+@app.get("/admin", response_class=HTMLResponse)
+def admin_dashboard(request: Request):
+
+    if not is_logged_in(request):
+        return RedirectResponse("/login", status_code=302)
+
+    return """
+    <html dir="rtl">
+    <head>
+        <meta charset="utf-8">
+        <title>لوحة المالك</title>
+
+        <style>
+            body{
+                background:#020617;
+                color:white;
+                font-family:Arial;
+                padding:40px;
+            }
+
+            .card{
+                background:#111827;
+                border:1px solid #374151;
+                border-radius:16px;
+                padding:20px;
+                margin-bottom:20px;
+            }
+
+            h1{
+                color:#f97316;
+            }
+
+            h2{
+                color:#38bdf8;
+            }
+
+            ul{
+                line-height:2;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <h1>🔐 لوحة المالك الخاصة</h1>
+
+        <div class="card">
+            <h2>🧠 محرك التعلم الذكي</h2>
+
+            <ul>
+                <li>أفضل درجة جودة</li>
+                <li>أفضل ظروف سوق</li>
+                <li>أفضل ATR%</li>
+                <li>أفضل فريم</li>
+                <li>أفضل سهم</li>
+                <li>أسباب الخسائر</li>
+                <li>توصيات تطوير المؤشر</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>🚧 قيد التطوير</h2>
+
+            <p>
+            هذه الصفحة مخصصة لك فقط وسوف نضيف فيها
+            جميع تحليلات الذكاء الاصطناعي الخاصة بالمؤشر.
+            </p>
+        </div>
+
+    </body>
+    </html>
+    """
 
 @app.get("/", response_class=HTMLResponse)
 def dashboard():
