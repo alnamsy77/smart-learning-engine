@@ -1,6 +1,12 @@
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
-from database import init_db, insert_signal, fetch_recent, fetch_stats
+from database import (
+    init_db,
+    insert_signal,
+    fetch_recent,
+    fetch_stats,
+    get_learning_insights
+)
 from learning import (
     simple_learning_summary,
     learn_best_score
@@ -682,6 +688,11 @@ def dashboard():
 @app.get("/api/learning/run")
 def run_learning():
     return learn_best_score()
+
+
+@app.get("/api/learning")
+def api_learning():
+    return get_learning_insights()
 
 
 @app.post("/webhook/tradingview")
