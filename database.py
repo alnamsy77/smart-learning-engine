@@ -381,3 +381,54 @@ def fetch_stats():
         "best_timeframe": best_timeframe,
         "best_ticker": best_ticker,
     }
+
+
+def save_learning_insight(insight_key, insight_type, title, value, details):
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO learning_insights (
+            insight_key,
+            insight_type,
+            title,
+            value,
+            details
+        )
+        VALUES (%s, %s, %s, %s, %s)
+        ON CONFLICT (insight_key)
+        DO UPDATE SET
+            created_at = NOW(),
+            insight_type = EXCLUDED.insight_type,
+            title = EXCLUDED.title,
+            value = EXCLUDED.value,
+            details = EXCLUDED.details;
+    """, (
+        insight_key,
+        insight_type,
+        title,
+        value,
+        json.dumps(details, ensure_ascii=False)
+    ))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+def get_learning_insights():
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT *
+        FROM learning_insights
+        ORDER BY created_at DESC;
+    """)
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return rows
