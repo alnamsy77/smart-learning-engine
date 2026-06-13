@@ -9,7 +9,8 @@ from database import (
 )
 from learning import (
     simple_learning_summary,
-    learn_best_score
+    learn_best_score,
+    learn_best_market_state
 )
 import os
 import secrets
@@ -687,7 +688,14 @@ def dashboard():
 
 @app.get("/api/learning/run")
 def run_learning():
-    return learn_best_score()
+
+    score_result = learn_best_score()
+    market_result = learn_best_market_state()
+
+    return {
+        "score_learning": score_result,
+        "market_learning": market_result
+    }
 
 
 @app.get("/api/learning")
