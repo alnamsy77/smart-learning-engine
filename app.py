@@ -231,32 +231,32 @@ def admin_dashboard(request: Request):
         <title>لوحة المالك</title>
 
         <style>
-            body{
+            body{{
                 background:#020617;
                 color:white;
                 font-family:Arial;
                 padding:40px;
-            }
+            }}
 
-            .card{
+            .card{{
                 background:#111827;
                 border:1px solid #374151;
                 border-radius:16px;
                 padding:20px;
                 margin-bottom:20px;
-            }
+            }}
 
-            h1{
+            h1{{
                 color:#f97316;
-            }
+            }}
 
-            h2{
+            h2{{
                 color:#38bdf8;
-            }
+            }}
 
-            ul{
+            ul{{
                 line-height:2;
-            }
+            }}
         </style>
     </head>
 
