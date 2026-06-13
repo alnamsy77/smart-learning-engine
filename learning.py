@@ -96,3 +96,74 @@ def learn_best_score():
         "best_score_range": best_bucket,
         "win_rate": round(best_rate, 1)
     }
+
+
+def learn_best_market_state():
+
+    rows = fetch_recent(1000)
+
+    closed = [
+        r for r in rows
+        if r.get("result") in ["WIN", "LOSS"]
+    ]
+
+    if len(closed) < 10:
+        return {
+            "status": "waiting",
+            "message": "لا توجد صفقات مغلقة كافية"
+        }
+
+    states = {}
+
+    for row in closed:
+
+        state = row.get("market_state")
+
+        if not state:
+            continue
+
+        if state not in states:
+            states[state] = {
+                "wins": 0,
+                "losses": 0
+            }
+
+        if row["result"] == "WIN":
+            states[state]["wins"] += 1
+        else:
+            states[state]["losses"] += 1
+
+    best_state = None
+    best_rate = 0
+
+    for state, stats in states.items():
+
+        total = stats["wins"] + stats["losses"]
+
+        if total < 3:
+            continue
+
+        rate = (stats["wins"] / total) * 100
+
+        if rate > best_rate:
+            best_rate = rate
+            best_state = state
+
+    if best_state:
+
+        save_learning_insight(
+            insight_key="best_market_state",
+            insight_type="market_state",
+            title=f"أفضل حالة سوق هي {best_state}",
+            value=round(best_rate, 1),
+            details={
+                "market_state": best_state,
+                "win_rate": round(best_rate, 1)
+            }
+        )
+
+    return {
+        "status": "success",
+        "best_market_state": best_state,
+        "win_rate": round(best_rate, 1)
+    }
