@@ -54,6 +54,18 @@ def init_db():
     """)
 
     cur.execute("""
+    CREATE TABLE IF NOT EXISTS learning_insights (
+        id SERIAL PRIMARY KEY,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        insight_key TEXT UNIQUE,
+        insight_type TEXT,
+        title TEXT,
+        value NUMERIC,
+        details JSONB
+    );
+    """)
+
+    cur.execute("""
     ALTER TABLE signals
     ADD COLUMN IF NOT EXISTS trade_id TEXT,
     ADD COLUMN IF NOT EXISTS event TEXT DEFAULT 'OPEN',
