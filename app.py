@@ -10,8 +10,10 @@ from database import (
 from learning import (
     simple_learning_summary,
     learn_best_score,
-    learn_best_market_state
+    learn_best_market_state,
+    learn_best_timeframe
 )
+
 import os
 import secrets
 
@@ -691,10 +693,12 @@ def run_learning():
 
     score_result = learn_best_score()
     market_result = learn_best_market_state()
+    timeframe_result = learn_best_timeframe()
 
     return {
         "score_learning": score_result,
-        "market_learning": market_result
+        "market_learning": market_result,
+        "timeframe_learning": timeframe_result
     }
 
 
