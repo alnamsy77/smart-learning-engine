@@ -334,7 +334,7 @@ def dashboard():
     best_timeframe_name = group_name(best_timeframe)
     best_ticker_name = group_name(best_ticker)
 
-       html_rows = ""
+    html_rows = ""
 
     for r in rows:
         signal = str(r.get("signal") or "").upper()
