@@ -9,7 +9,8 @@ from database import (
 )
 from learning import (
     simple_learning_summary,
-    learn_all_settings
+    learn_all_settings,
+    generate_ai_recommendation
 )
 
 
@@ -712,6 +713,11 @@ def dashboard():
 @app.get("/api/learning/run")
 def run_learning():
     return learn_all_settings()
+
+
+@app.get("/api/learning/recommendation")
+def ai_recommendation():
+    return generate_ai_recommendation()
 
 
 @app.get("/api/learning")
