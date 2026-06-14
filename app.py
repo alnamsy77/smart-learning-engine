@@ -383,10 +383,11 @@ def dashboard():
                 margin:auto;
             }}
             h1 {{
-                color:#f97316;
+                color:#facc15;
                 margin-bottom:6px;
-                font-size:34px;
-            }}
+                font-size:42px;
+                text-shadow:0 0 18px rgba(250,204,21,0.35);
+}}
             h2 {{
                 color:#f9fafb;
                 margin-top:26px;
@@ -439,14 +440,15 @@ def dashboard():
                 margin-bottom:20px;
             }}
             .card {{
-                background:linear-gradient(180deg,#111827,#0f172a);
-                border:1px solid #374151;
-                border-radius:16px;
-                padding:16px;
-                box-shadow:0 10px 25px rgba(0,0,0,0.28);
-                position:relative;
-                overflow:hidden;
-            }}
+              background:linear-gradient(145deg, rgba(15,23,42,0.96), rgba(2,6,23,0.98));
+              border:1px solid rgba(56,189,248,0.28);
+              border-radius:20px;
+              padding:18px;
+              box-shadow:0 0 24px rgba(56,189,248,0.12),
+              inset 0 0 18px rgba(255,255,255,0.025);
+              position:relative;
+              overflow:hidden;
+}}
             .card::after {{
                 content:"";
                 position:absolute;
@@ -563,9 +565,9 @@ def dashboard():
     </head>
     <body>
         <div class="container">
-            <h1>🧠🔥 لوحة محرك التعلم الذكي</h1>
-            <div class="badge">النظام يعمل ✅ | استقبال الإشارات فعال ✅ | تتبع الأهداف مفعّل 🎯</div>
-            <p class="subtitle">لوحة عربية لمتابعة أداء المؤشر والإشارات القادمة من TradingView.</p>
+           <h1>🧭 بوصلة الفرص</h1>
+           <div class="badge">النظام نشط ✅ | بوصلة الفرص متصلة ✅ | التعلم الذكي يعمل 🧠</div>
+           <p class="subtitle">نظام ذكي لمتابعة أداء بوصلة الفرص وتحليل الإشارات القادمة من TradingView.</p>
 
             <div class="quote">
                 <b>قاعدة التداول:</b>
@@ -614,19 +616,7 @@ def dashboard():
                     <div class="bar"><div class="bar-fill" style="width:{target1_rate}%"></div></div>
                 </div>
 
-                <div class="card">
-                    <div class="card-title">🎯 تحقق الهدف الثاني</div>
-                    <div class="num target">{target2_hit}</div>
-                    <div class="hint">{target2_rate}% من إجمالي الإشارات</div>
-                    <div class="bar"><div class="bar-fill" style="width:{target2_rate}%"></div></div>
-                </div>
 
-                <div class="card">
-                    <div class="card-title">🏆 تحقق الهدف الثالث</div>
-                    <div class="num target">{target3_hit}</div>
-                    <div class="hint">{target3_rate}% من إجمالي الإشارات</div>
-                    <div class="bar"><div class="bar-fill" style="width:{target3_rate}%"></div></div>
-                </div>
             </div>
 
             <h2>🧭 قراءة ظروف السوق وأداء الفرص</h2>
