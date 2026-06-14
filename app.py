@@ -9,10 +9,7 @@ from database import (
 )
 from learning import (
     simple_learning_summary,
-    learn_best_score,
-    learn_best_market_state,
-    learn_best_timeframe,
-    learn_best_ticker
+    learn_all_settings
 )
 
 
@@ -714,18 +711,7 @@ def dashboard():
 
 @app.get("/api/learning/run")
 def run_learning():
-
-    score_result = learn_best_score()
-    market_result = learn_best_market_state()
-    timeframe_result = learn_best_timeframe()
-    ticker_result = learn_best_ticker()
-
-    return {
-        "score_learning": score_result,
-        "market_learning": market_result,
-        "timeframe_learning": timeframe_result,
-        "ticker_learning": ticker_result
-    }
+    return learn_all_settings()
 
 
 @app.get("/api/learning")
