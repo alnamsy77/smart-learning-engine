@@ -141,6 +141,7 @@ def update_trade_event(data: dict):
             result = 'WIN',
             target1_hit = TRUE,
             target1_hit_at = COALESCE(target1_hit_at, NOW()),
+            closed_at = COALESCE(closed_at, NOW()),
             raw_json = %s
         WHERE trade_id = %s
         RETURNING id;
@@ -175,7 +176,6 @@ def update_trade_event(data: dict):
             target1_hit_at = COALESCE(target1_hit_at, NOW()),
             target2_hit_at = COALESCE(target2_hit_at, NOW()),
             target3_hit_at = COALESCE(target3_hit_at, NOW()),
-            closed_at = COALESCE(closed_at, NOW()),
             raw_json = %s
         WHERE trade_id = %s
         RETURNING id;
