@@ -269,3 +269,72 @@ def learn_all_settings():
         "best_min_atr_pct": learn_best_min_atr_pct(),
         "best_target_mult_1": learn_best_target_mult_1()
     }
+
+
+def generate_ai_recommendation():
+    learning = learn_all_settings()
+
+    def pick(key, label):
+        item = learning.get(key, {})
+        value = item.get("best_value")
+        win_rate = item.get("win_rate", 0)
+        total = item.get("total", 0)
+
+        if value is None or total == 0:
+            return {
+                "label": label,
+                "value": None,
+                "win_rate": win_rate,
+                "total": total,
+                "note": "لا توجد بيانات كافية"
+            }
+
+        return {
+            "label": label,
+            "value": value,
+            "win_rate": win_rate,
+            "total": total,
+            "note": f"نسبة النجاح {win_rate}% من {total} صفقات مغلقة"
+        }
+
+    recommendation = {
+        "status": "success",
+        "message": "توصية مبدئية مبنية على الصفقات المغلقة فقط. لا تعتمد عليها إلا بعد تراكم بيانات كافية.",
+        "minimum_data_rule": {
+            "min_closed_trades": MIN_CLOSED_TRADES,
+            "min_group_trades": MIN_GROUP_TRADES
+        },
+        "recommended_settings": {
+            "score": pick("best_score", "أفضل درجة جودة"),
+            "market_state": pick("best_market_state", "أفضل حالة سوق"),
+            "timeframe": pick("best_timeframe", "أفضل فريم"),
+            "ticker": pick("best_ticker", "أفضل سهم / عملة"),
+            "atr_range": {
+                "label": "أفضل نطاق ATR%",
+                "value": learning.get("best_atr_range", {}).get("best_atr_range"),
+                "win_rate": learning.get("best_atr_range", {}).get("win_rate", 0),
+                "total": learning.get("best_atr_range", {}).get("total", 0)
+            },
+            "pivot_left": pick("best_pivot_left", "Pivot Left"),
+            "pivot_right": pick("best_pivot_right", "Pivot Right"),
+            "cooldown_bars": pick("best_cooldown_bars", "Cooldown Bars"),
+            "min_score": pick("best_min_score", "Min Score"),
+            "rf_period": pick("best_rf_period", "RF Period"),
+            "rf_multiplier": pick("best_rf_multiplier", "RF Multiplier"),
+            "rqk_len": pick("best_rqk_len", "RQK Length"),
+            "rqk_weight": pick("best_rqk_weight", "RQK Weight"),
+            "atr_len": pick("best_atr_len", "ATR Length"),
+            "min_atr_pct": pick("best_min_atr_pct", "Min ATR%"),
+            "target_mult_1": pick("best_target_mult_1", "Target 1 Multiplier")
+        }
+    }
+
+    save_learning_insight(
+        insight_key="ai_recommendation",
+        insight_type="ai_recommendation",
+        title="توصية الذكاء الاصطناعي للإعدادات",
+        value=0,
+        details=recommendation
+    )
+
+    return recommendation
