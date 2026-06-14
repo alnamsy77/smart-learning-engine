@@ -358,7 +358,6 @@ def dashboard():
             <td class="{result_class}">{ar_result(r.get('result'))}</td>
         </tr>
         """
-
       return f"""
         <!doctype html>
         <html lang="ar" dir="rtl">
