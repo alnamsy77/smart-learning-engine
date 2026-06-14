@@ -359,161 +359,129 @@ def dashboard():
         </tr>
         """
 
-    return f"""
-    <!doctype html>
-    <html lang="ar" dir="rtl">
+      return f"""
+        <!doctype html>
+        <html lang="ar" dir="rtl">
     <head>
         <meta charset="utf-8">
-        <title>لوحة محرك التعلم الذكي</title>
+       <title>🧭 بوصلة الفرص | Smart Learning Engine</title>
         <style>
             body {{
-             font-family: Arial, sans-serif;
-             background:
-             radial-gradient(circle at top right, rgba(250,204,21,0.20), transparent 25%),
-             radial-gradient(circle at top left, rgba(56,189,248,0.15), transparent 25%),
-             radial-gradient(circle at bottom left, rgba(34,197,94,0.12), transparent 25%),
-             #020617;
-             color:#e5e7eb;
-             margin:0;
-             padding:24px;
+                font-family: Arial, sans-serif;
+                background:
+                    radial-gradient(circle at top right, rgba(250,204,21,0.22), transparent 24%),
+                    radial-gradient(circle at top left, rgba(56,189,248,0.16), transparent 26%),
+                    radial-gradient(circle at bottom left, rgba(34,197,94,0.12), transparent 28%),
+                    #020617;
+                color:#e5e7eb;
+                margin:0;
+                padding:24px;
             }}
-               .container {{
+            .container {{
                 max-width:1800px;
                 margin:auto;
-}}
+            }}
+            .hero {{
+                background:linear-gradient(135deg, rgba(15,23,42,0.92), rgba(2,6,23,0.98));
+                border:1px solid rgba(250,204,21,0.30);
+                border-radius:28px;
+                padding:28px;
+                margin-bottom:24px;
+                box-shadow:0 0 45px rgba(250,204,21,0.12);
+            }}
             h1 {{
-               color:#facc15;
-               margin-bottom:6px;
-               font-size:54px;
-               font-weight:800;
-               text-shadow:
-               0 0 12px rgba(250,204,21,0.45),
-               0 0 30px rgba(250,204,21,0.25);
-}}
-            h2 {{
-                color:#f9fafb;
-                margin-top:26px;
-                margin-bottom:14px;
+                color:#facc15;
+                font-size:58px;
+                margin:0 0 8px 0;
+                text-shadow:0 0 18px rgba(250,204,21,0.45);
             }}
             .subtitle {{
-                color:#9ca3af;
+                color:#cbd5e1;
+                font-size:18px;
                 margin-bottom:18px;
             }}
             .badge {{
                 display:inline-block;
                 background:linear-gradient(90deg,#065f46,#047857);
                 color:white;
-                padding:8px 14px;
+                padding:9px 16px;
                 border-radius:999px;
                 font-size:13px;
-                margin-bottom:12px;
-                box-shadow:0 0 18px rgba(16,185,129,0.25);
+                box-shadow:0 0 20px rgba(16,185,129,0.30);
             }}
             .quote {{
-                background:linear-gradient(90deg,#111827,#1e293b);
-                border:1px solid #374151;
+                margin-top:18px;
+                background:rgba(15,23,42,0.75);
+                border:1px solid rgba(249,115,22,0.45);
                 border-right:5px solid #f97316;
-                border-radius:16px;
-                padding:16px 18px;
-                margin:18px 0;
+                border-radius:18px;
+                padding:16px 20px;
                 color:#fef3c7;
-                font-size:16px;
-                line-height:1.8;
+                line-height:1.9;
             }}
             .quote b {{
                 color:#f97316;
             }}
+            h2 {{
+                color:#f9fafb;
+                margin-top:28px;
+                margin-bottom:16px;
+                font-size:26px;
+            }}
             .cards {{
                 display:grid;
                 grid-template-columns:repeat(5,1fr);
-                gap:12px;
-                margin-bottom:14px;
+                gap:14px;
+                margin-bottom:18px;
             }}
-            .cards2 {{
+            .cards3 {{
                 display:grid;
                 grid-template-columns:repeat(3,1fr);
-                gap:12px;
-                margin-bottom:20px;
-            }}
-            .cards4 {{
-                display:grid;
-                grid-template-columns:repeat(4,1fr);
-                gap:12px;
+                gap:14px;
                 margin-bottom:20px;
             }}
             .card {{
-              background:linear-gradient(145deg, rgba(15,23,42,0.96), rgba(2,6,23,0.98));
-              border:1px solid rgba(56,189,248,0.28);
-              border-radius:20px;
-              padding:18px;
-              box-shadow:0 0 24px rgba(56,189,248,0.12),
-              inset 0 0 18px rgba(255,255,255,0.025);
-              position:relative;
-              overflow:hidden;
-}}
+                background:linear-gradient(145deg, rgba(15,23,42,0.96), rgba(2,6,23,0.98));
+                border:1px solid rgba(56,189,248,0.28);
+                border-radius:22px;
+                padding:20px;
+                box-shadow:0 0 28px rgba(56,189,248,0.12), inset 0 0 20px rgba(255,255,255,0.025);
+                position:relative;
+                overflow:hidden;
+            }}
             .card::after {{
                 content:"";
                 position:absolute;
-                width:90px;
-                height:90px;
+                width:95px;
+                height:95px;
                 border-radius:50%;
-                background:rgba(249,115,22,0.08);
-                left:-25px;
-                bottom:-25px;
+                background:rgba(250,204,21,0.07);
+                left:-28px;
+                bottom:-28px;
             }}
             .card-title {{
-                color:#9ca3af;
+                color:#94a3b8;
                 font-size:13px;
             }}
             .num {{
-                font-size:31px;
+                font-size:36px;
                 font-weight:bold;
-                margin-top:8px;
+                margin-top:10px;
             }}
-            .big-text {{
-                font-size:23px;
-                font-weight:bold;
-                margin-top:8px;
-                color:#f9fafb;
-            }}
+            .win {{ color:#22c55e; font-weight:bold; }}
+            .loss {{ color:#ef4444; font-weight:bold; }}
+            .open {{ color:#facc15; font-weight:bold; }}
+            .target {{ color:#38bdf8; font-weight:bold; }}
             .hint {{
-                font-size:12px;
                 color:#94a3b8;
+                font-size:12px;
                 margin-top:6px;
             }}
-            .call {{
-                color:#22c55e;
-                font-weight:bold;
-            }}
-            .put {{
-                color:#ef4444;
-                font-weight:bold;
-            }}
-            .win {{
-                color:#22c55e;
-                font-weight:bold;
-            }}
-            .loss {{
-                color:#ef4444;
-                font-weight:bold;
-            }}
-            .open {{
-                color:#facc15;
-                font-weight:bold;
-            }}
-            .target {{
-                color:#38bdf8;
-                font-weight:bold;
-            }}
-            .gold {{
-                color:#facc15;
-                font-weight:bold;
-            }}
             .bar {{
-                height:8px;
+                height:9px;
                 background:#1f2937;
                 border-radius:999px;
-                margin-top:10px;
+                margin-top:12px;
                 overflow:hidden;
             }}
             .bar-fill {{
@@ -529,64 +497,63 @@ def dashboard():
             table {{
                 width:100%;
                 border-collapse:collapse;
-                background:#111827;
-                border-radius:16px;
+                background:rgba(15,23,42,0.92);
+                border-radius:18px;
                 overflow:hidden;
-                box-shadow:0 10px 25px rgba(0,0,0,0.30);
+                box-shadow:0 0 30px rgba(0,0,0,0.35);
+                border:1px solid rgba(56,189,248,0.18);
             }}
             th, td {{
-                border-bottom:1px solid #374151;
-                padding:11px;
+                border-bottom:1px solid rgba(55,65,81,0.8);
+                padding:12px;
                 text-align:center;
                 font-size:14px;
             }}
             th {{
                 background:#1f2937;
                 color:#f9fafb;
-                position:sticky;
-                top:0;
             }}
             tr:hover {{
                 background:#1e293b;
             }}
             .footer-note {{
-                margin-top:14px;
+                margin-top:16px;
                 color:#94a3b8;
                 font-size:13px;
                 text-align:center;
             }}
             @media (max-width: 1100px) {{
-                .cards, .cards2, .cards4 {{
+                .cards, .cards3 {{
                     grid-template-columns:repeat(2,1fr);
-                }}
-                table {{
-                    font-size:12px;
                 }}
             }}
         </style>
     </head>
     <body>
         <div class="container">
-           <h1>🧭 بوصلة الفرص</h1>
-           <div class="badge">النظام نشط ✅ | بوصلة الفرص متصلة ✅ | التعلم الذكي يعمل 🧠</div>
-           <p class="subtitle">نظام ذكي لمتابعة أداء بوصلة الفرص وتحليل الإشارات القادمة من TradingView.</p>
 
-            <div class="quote">
-                <b>قاعدة التداول:</b>
-                لا تطارد السوق، ولا تدخل بلا خطة. الصبر على الفرصة أقوى من كثرة الدخول.
-                الربح لا يأتي من كل إشارة، بل من الالتزام بالاستراتيجية وإدارة الصفقة حتى نهايتها.
+            <div class="hero">
+                <h1>🧭 بوصلة الفرص</h1>
+                <div class="badge">النظام نشط ✅ | استقبال الإشارات فعال ✅ | تتبع WIN / LOSS يعمل 🎯</div>
+                <p class="subtitle">لوحة احترافية لمتابعة أداء إشارات بوصلة الفرص القادمة من TradingView.</p>
+
+                <div class="quote">
+                    <b>قاعدة التداول:</b>
+                    لا تطارد السوق، ولا تدخل بلا خطة. الصبر على الفرصة أقوى من كثرة الدخول.
+                    الربح لا يأتي من كل إشارة، بل من الالتزام بالاستراتيجية وإدارة الصفقة حتى نهايتها.
+                </div>
             </div>
 
-            <h2>📊 أداء المؤشر العام</h2>
+            <h2>📊 أداء بوصلة الفرص</h2>
             <div class="cards">
                 <div class="card">
-                    <div class="card-title">إجمالي إشارات المؤشر</div>
+                    <div class="card-title">إجمالي الإشارات</div>
                     <div class="num">{total}</div>
                     <div class="hint">كل الفرص المسجلة</div>
                 </div>
 
                 <div class="card">
-                    <div class="card-title">نسبة نجاح المؤشر</div>
+                    <div class="card-title">نسبة النجاح</div>
                     <div class="num win">{win_rate}%</div>
                     <div class="bar"><div class="bar-fill" style="width:{win_rate}%"></div></div>
                 </div>
@@ -610,7 +577,7 @@ def dashboard():
                 </div>
             </div>
 
-            <div class="cards2">
+            <div class="cards3">
                 <div class="card">
                     <div class="card-title">🎯 تحقق الهدف الأول</div>
                     <div class="num target">{target1_hit}</div>
@@ -618,53 +585,36 @@ def dashboard():
                     <div class="bar"><div class="bar-fill" style="width:{target1_rate}%"></div></div>
                 </div>
 
-
-            </div>
-
-            <h2>🧭 قراءة ظروف السوق وأداء الفرص</h2>
-            <div class="cards4">
                 <div class="card">
                     <div class="card-title">🟢 نجاح الفرص الصاعدة</div>
-                    <div class="num call">{call_win_rate}%</div>
-                    <div class="hint">أداء إشارات الصعود فقط</div>
+                    <div class="num win">{call_win_rate}%</div>
+                    <div class="hint">أداء إشارات CALL فقط</div>
                 </div>
 
                 <div class="card">
                     <div class="card-title">🔴 نجاح الفرص الهابطة</div>
-                    <div class="num put">{put_win_rate}%</div>
-                    <div class="hint">أداء إشارات الهبوط فقط</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">📈 أفضل ظروف السوق</div>
-                    <div class="big-text gold">{best_market_name}</div>
-                    <div class="hint">نسبة النجاح: {group_rate(best_market_state)}% | عدد الإشارات: {group_total(best_market_state)}</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">⭐ أفضل درجة جودة</div>
-                    <div class="big-text gold">{ar_score(best_score_name)}</div>
-                    <div class="hint">نسبة النجاح: {group_rate(best_score)}% | عدد الإشارات: {group_total(best_score)}</div>
+                    <div class="num loss">{put_win_rate}%</div>
+                    <div class="hint">أداء إشارات PUT فقط</div>
                 </div>
             </div>
 
-            <div class="cards2">
-                <div class="card">
-                    <div class="card-title">⏰ أفضل فريم أداءً</div>
-                    <div class="big-text">{best_timeframe_name}</div>
-                    <div class="hint">نسبة النجاح: {group_rate(best_timeframe)}% | عدد الإشارات: {group_total(best_timeframe)}</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">🏅 أفضل سهم / عملة أداءً</div>
-                    <div class="big-text">{best_ticker_name}</div>
-                    <div class="hint">نسبة النجاح: {group_rate(best_ticker)}% | عدد الإشارات: {group_total(best_ticker)}</div>
-                </div>
-
+            <div class="cards3">
                 <div class="card">
                     <div class="card-title">ميزان النتائج</div>
-                    <div class="big-text"><span class="win">{win_count} رابحة</span> / <span class="loss">{loss_count} خاسرة</span></div>
-                    <div class="hint">يعكس أداء المؤشر بعد إغلاق الصفقات</div>
+                    <div class="num"><span class="win">{win_count}</span> / <span class="loss">{loss_count}</span></div>
+                    <div class="hint">رابحة / خاسرة</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">حالة النظام</div>
+                    <div class="num win">نشط</div>
+                    <div class="hint">جاهز لاستقبال إشارات الأسهم</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">مرحلة البيانات</div>
+                    <div class="num target">حقيقية</div>
+                    <div class="hint">بعد تنظيف بيانات الاختبار</div>
                 </div>
             </div>
 
@@ -692,7 +642,7 @@ def dashboard():
             </table>
 
             <div class="footer-note">
-                هذه اللوحة للتعلّم والتحليل وليست توصية شراء أو بيع. القرار النهائي يكون وفق خطتك وإدارتك للمخاطر.
+                هذه اللوحة للتعلّم والتحليل وليست توصية شراء أو بيع. .
             </div>
         </div>
     </body>
