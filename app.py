@@ -383,13 +383,121 @@ def dashboard():
                 margin:auto;
             }}
             .hero {{
-                background:linear-gradient(135deg, rgba(15,23,42,0.92), rgba(2,6,23,0.98));
-                border:1px solid rgba(250,204,21,0.30);
-                border-radius:28px;
-                padding:28px;
-                margin-bottom:24px;
-                box-shadow:0 0 45px rgba(250,204,21,0.12);
-            }}
+    background:
+        linear-gradient(135deg, rgba(15,23,42,0.94), rgba(2,6,23,0.98)),
+        radial-gradient(circle at top right, rgba(250,204,21,0.22), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(56,189,248,0.16), transparent 30%);
+    border:1px solid rgba(250,204,21,0.34);
+    border-radius:32px;
+    padding:32px;
+    margin-bottom:28px;
+    box-shadow:
+        0 0 55px rgba(250,204,21,0.14),
+        inset 0 0 35px rgba(56,189,248,0.04);
+}}
+     .hero-top {{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+}}
+
+.hero-status {{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#22c55e;
+    font-weight:bold;
+    background:rgba(34,197,94,0.10);
+    border:1px solid rgba(34,197,94,0.35);
+    padding:10px 16px;
+    border-radius:999px;
+    box-shadow:0 0 20px rgba(34,197,94,0.18);
+}}
+
+.status-dot {{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#22c55e;
+    box-shadow:0 0 16px #22c55e;
+}}
+
+.speedometers {{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    margin:28px 0 18px 0;
+}}
+
+.gauge-card {{
+    background:linear-gradient(145deg, rgba(15,23,42,0.86), rgba(2,6,23,0.96));
+    border:1px solid rgba(56,189,248,0.25);
+    border-radius:24px;
+    padding:22px;
+    text-align:center;
+    box-shadow:0 0 28px rgba(56,189,248,0.10);
+}}
+
+.gauge {{
+    width:150px;
+    height:150px;
+    margin:0 auto 14px auto;
+    border-radius:50%;
+    background:
+        conic-gradient(var(--c) calc(var(--p) * 1%), rgba(30,41,59,0.95) 0);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    box-shadow:0 0 28px color-mix(in srgb, var(--c) 35%, transparent);
+}}
+
+.gauge::before {{
+    content:"";
+    position:absolute;
+    width:112px;
+    height:112px;
+    border-radius:50%;
+    background:#020617;
+    border:1px solid rgba(255,255,255,0.06);
+}}
+
+.gauge-inner {{
+    position:relative;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}}
+
+.gauge-inner span {{
+    font-size:32px;
+    font-weight:900;
+    color:#f9fafb;
+}}
+
+.gauge-inner small {{
+    color:#94a3b8;
+    margin-top:4px;
+}}
+
+.gauge-title {{
+    color:#e5e7eb;
+    font-weight:bold;
+    font-size:15px;
+}}
+
+@media (max-width: 1100px) {{
+    .hero-top {{
+        flex-direction:column;
+    }}
+
+    .speedometers {{
+        grid-template-columns:1fr;
+    }}
+}}    
             h1 {{
                 color:#facc15;
                 font-size:58px;
@@ -533,18 +641,58 @@ def dashboard():
     <body>
         <div class="container">
 
-            <div class="hero">
-                <h1>🧭 بوصلة الفرص</h1>
-                <div class="badge">النظام نشط ✅ | استقبال الإشارات فعال ✅ | تتبع WIN / LOSS يعمل 🎯</div>
-                <p class="subtitle">لوحة احترافية لمتابعة أداء إشارات بوصلة الفرص القادمة من TradingView.</p>
+           <div class="hero">
+    <div class="hero-top">
+        <div>
+            <h1>🧭 بوصلة الفرص</h1>
+            <div class="badge">النظام نشط ✅ | استقبال الإشارات فعال ✅ | تتبع WIN / LOSS يعمل 🎯</div>
+            <p class="subtitle">لوحة احترافية لمتابعة أداء إشارات بوصلة الفرص القادمة من TradingView.</p>
+        </div>
 
-                <div class="quote">
-                    <b>قاعدة التداول:</b>
-                    لا تطارد السوق، ولا تدخل بلا خطة. الصبر على الفرصة أقوى من كثرة الدخول.
-                    الربح لا يأتي من كل إشارة، بل من الالتزام بالاستراتيجية وإدارة الصفقة حتى نهايتها.
+        <div class="hero-status">
+            <div class="status-dot"></div>
+            <span>LIVE</span>
+        </div>
+    </div>
+
+    <div class="speedometers">
+        <div class="gauge-card">
+            <div class="gauge" style="--p:{win_rate}; --c:#22c55e;">
+                <div class="gauge-inner">
+                    <span>{win_rate}%</span>
+                    <small>نجاح</small>
                 </div>
             </div>
+            <div class="gauge-title">عداد نجاح المؤشر</div>
+        </div>
 
+        <div class="gauge-card">
+            <div class="gauge" style="--p:{loss_rate}; --c:#ef4444;">
+                <div class="gauge-inner">
+                    <span>{loss_rate}%</span>
+                    <small>خسارة</small>
+                </div>
+            </div>
+            <div class="gauge-title">عداد الخسارة</div>
+        </div>
+
+        <div class="gauge-card">
+            <div class="gauge" style="--p:{target1_rate}; --c:#38bdf8;">
+                <div class="gauge-inner">
+                    <span>{target1_rate}%</span>
+                    <small>هدف 1</small>
+                </div>
+            </div>
+            <div class="gauge-title">عداد تحقق الهدف الأول</div>
+        </div>
+    </div>
+
+    <div class="quote">
+        <b>قاعدة التداول:</b>
+        لا تطارد السوق، ولا تدخل بلا خطة. الصبر على الفرصة أقوى من كثرة الدخول.
+        الربح لا يأتي من كل إشارة، بل من الالتزام بالاستراتيجية وإدارة الصفقة حتى نهايتها.
+    </div>
+</div>
             <h2>📊 أداء بوصلة الفرص</h2>
             <div class="cards">
                 <div class="card">
