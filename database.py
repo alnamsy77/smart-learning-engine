@@ -76,6 +76,19 @@ def init_db():
     ADD COLUMN IF NOT EXISTS target1_hit_at TIMESTAMPTZ,
     ADD COLUMN IF NOT EXISTS target2_hit_at TIMESTAMPTZ,
     ADD COLUMN IF NOT EXISTS target3_hit_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS pivot_left INTEGER,
+    ADD COLUMN IF NOT EXISTS pivot_right INTEGER,
+    ADD COLUMN IF NOT EXISTS cooldown_bars INTEGER,
+    ADD COLUMN IF NOT EXISTS min_score INTEGER,
+    ADD COLUMN IF NOT EXISTS rf_period INTEGER,
+    ADD COLUMN IF NOT EXISTS rf_multiplier NUMERIC,
+    ADD COLUMN IF NOT EXISTS rqk_len INTEGER,
+    ADD COLUMN IF NOT EXISTS rqk_weight NUMERIC,
+    ADD COLUMN IF NOT EXISTS atr_len INTEGER,
+    ADD COLUMN IF NOT EXISTS min_atr_pct NUMERIC,
+    ADD COLUMN IF NOT EXISTS target_mult_1 NUMERIC,
+    ADD COLUMN IF NOT EXISTS target_mult_2 NUMERIC,
+    ADD COLUMN IF NOT EXISTS target_mult_3 NUMERIC,
     ADD COLUMN IF NOT EXISTS closed_at TIMESTAMPTZ;
     """)
 
@@ -227,15 +240,33 @@ def insert_signal(data: dict):
         trade_id, event, ticker, signal, timeframe, price, score, atr, atr_pct,
         avg_daily_move, target1, target2, target3, stop_loss,
         rf_state, rqk_state, rp_state, market_state, is_sideways, move_ok,
-        compass_call, compass_put, indicator, status, result, raw_json
+        compass_call, compass_put, indicator,
+
+        pivot_left, pivot_right, cooldown_bars,
+        min_score, rf_period, rf_multiplier,
+        rqk_len, rqk_weight,
+        atr_len, min_atr_pct,
+        target_mult_1, target_mult_2, target_mult_3,
+
+        status, result, raw_json
     )
     VALUES (
         %(trade_id)s, %(event)s, %(ticker)s, %(signal)s, %(timeframe)s, %(price)s,
         %(score)s, %(atr)s, %(atr_pct)s, %(avg_daily_move)s,
         %(target1)s, %(target2)s, %(target3)s, %(stop_loss)s,
+
         %(rf_state)s, %(rqk_state)s, %(rp_state)s, %(market_state)s,
-        %(is_sideways)s, %(move_ok)s, %(compass_call)s, %(compass_put)s,
-        %(indicator)s, %(status)s, %(result)s, %(raw_json)s
+        %(is_sideways)s, %(move_ok)s,
+
+        %(compass_call)s, %(compass_put)s, %(indicator)s,
+
+        %(pivot_left)s, %(pivot_right)s, %(cooldown_bars)s,
+        %(min_score)s, %(rf_period)s, %(rf_multiplier)s,
+        %(rqk_len)s, %(rqk_weight)s,
+        %(atr_len)s, %(min_atr_pct)s,
+        %(target_mult_1)s, %(target_mult_2)s, %(target_mult_3)s,
+
+        %(status)s, %(result)s, %(raw_json)s
     )
     RETURNING id;
     """, {
@@ -249,19 +280,42 @@ def insert_signal(data: dict):
         "atr": to_float(data.get("atr")),
         "atr_pct": to_float(data.get("atr_pct")),
         "avg_daily_move": to_float(data.get("avg_daily_move")),
+
         "target1": to_float(data.get("target1")),
         "target2": to_float(data.get("target2")),
         "target3": to_float(data.get("target3")),
         "stop_loss": to_float(data.get("stop_loss")),
+
         "rf_state": data.get("rf_state"),
         "rqk_state": data.get("rqk_state"),
         "rp_state": data.get("rp_state"),
         "market_state": data.get("market_state"),
+
         "is_sideways": str(data.get("is_sideways")),
         "move_ok": str(data.get("move_ok")),
+
         "compass_call": str(data.get("compass_call")),
         "compass_put": str(data.get("compass_put")),
         "indicator": data.get("indicator"),
+
+        "pivot_left": to_int(data.get("pivot_left")),
+        "pivot_right": to_int(data.get("pivot_right")),
+        "cooldown_bars": to_int(data.get("cooldown_bars")),
+
+        "min_score": to_int(data.get("min_score")),
+        "rf_period": to_int(data.get("rf_period")),
+        "rf_multiplier": to_float(data.get("rf_multiplier")),
+
+        "rqk_len": to_int(data.get("rqk_len")),
+        "rqk_weight": to_float(data.get("rqk_weight")),
+
+        "atr_len": to_int(data.get("atr_len")),
+        "min_atr_pct": to_float(data.get("min_atr_pct")),
+
+        "target_mult_1": to_float(data.get("target_mult_1")),
+        "target_mult_2": to_float(data.get("target_mult_2")),
+        "target_mult_3": to_float(data.get("target_mult_3")),
+
         "status": data.get("status", "OPEN"),
         "result": "OPEN",
         "raw_json": json.dumps(data, ensure_ascii=False)
