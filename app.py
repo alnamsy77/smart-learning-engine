@@ -353,8 +353,6 @@ def dashboard():
             <td>{ar_score(r.get('score'))}</td>
             <td>{r.get('atr_pct') or ''}%</td>
             <td>{r.get('target1') or ''}</td>
-            <td>{r.get('target2') or ''}</td>
-            <td>{r.get('target3') or ''}</td>
             <td>{ar_market(r.get('market_state'))}</td>
             <td>{ar_status(r.get('status'))}</td>
             <td class="{result_class}">{ar_result(r.get('result'))}</td>
@@ -369,24 +367,28 @@ def dashboard():
         <title>لوحة محرك التعلم الذكي</title>
         <style>
             body {{
-                font-family: Arial, sans-serif;
-                background:
-                    radial-gradient(circle at top right, rgba(249,115,22,0.18), transparent 30%),
-                    radial-gradient(circle at bottom left, rgba(34,197,94,0.12), transparent 25%),
-                    #020617;
-                color:#e5e7eb;
-                margin:0;
-                padding:24px;
+             font-family: Arial, sans-serif;
+             background:
+             radial-gradient(circle at top right, rgba(250,204,21,0.20), transparent 25%),
+             radial-gradient(circle at top left, rgba(56,189,248,0.15), transparent 25%),
+             radial-gradient(circle at bottom left, rgba(34,197,94,0.12), transparent 25%),
+             #020617;
+             color:#e5e7eb;
+             margin:0;
+             padding:24px;
             }}
-            .container {{
-                max-width:1550px;
+               .container {{
+                max-width:1800px;
                 margin:auto;
-            }}
+}}
             h1 {{
-                color:#facc15;
-                margin-bottom:6px;
-                font-size:42px;
-                text-shadow:0 0 18px rgba(250,204,21,0.35);
+               color:#facc15;
+               margin-bottom:6px;
+               font-size:54px;
+               font-weight:800;
+               text-shadow:
+               0 0 12px rgba(250,204,21,0.45),
+               0 0 30px rgba(250,204,21,0.25);
 }}
             h2 {{
                 color:#f9fafb;
@@ -679,8 +681,6 @@ def dashboard():
                         <th>درجة الجودة</th>
                         <th>التذبذب %</th>
                         <th>هدف 1</th>
-                        <th>هدف 2</th>
-                        <th>هدف 3</th>
                         <th>حالة السوق</th>
                         <th>حالة الصفقة</th>
                         <th>النتيجة</th>
