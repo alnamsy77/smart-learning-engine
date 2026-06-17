@@ -44,6 +44,23 @@ def _last(series):
     s = series.dropna()
     return float(s.iloc[-1]) if len(s) else None
 
+def _download_close(symbol, period="1y", interval="1d"):
+    try:
+        data = yf.Ticker(symbol).history(
+            period=period,
+            interval=interval,
+            auto_adjust=True
+        )
+
+        if data is None or data.empty or "Close" not in data:
+            return None
+
+        close = data["Close"].dropna()
+        return close if len(close) else None
+
+    except Exception:
+        return None
+
 def _decision(score):
     if score >= 85:
         return {"label": "شراء قوي", "color": "green", "tone": "إقبال قوي على المخاطرة"}
@@ -99,14 +116,10 @@ def _trend_score():
     return round((spy + qqq) / 2, 1), {"SPY": spy, "QQQ": qqq}
 
 def _sector_score(symbol):
-    data = yf.download(symbol, period="1y", interval="1d", progress=False, auto_adjust=True)
-    if data is None or data.empty:
-        return 50, 0
+    close = _download_close(symbol, period="1y", interval="1d")
 
-    close = data["Close"]
-    if hasattr(close, "columns"):
-        close = close.iloc[:, 0]
-    close = close.dropna()
+    if close is None:
+        return 50, 0
 
     if len(close) < 80:
         return 50, 0
