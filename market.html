@@ -4,114 +4,324 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>🧭 بوصلة الفرص</title>
+
 <style>
+*{box-sizing:border-box}
 body{
-  margin:0;padding:14px;font-family:Arial;background:#020617;color:#e5e7eb;
-  background:radial-gradient(circle at top right,rgba(250,204,21,.18),transparent 25%),
-             radial-gradient(circle at bottom left,rgba(14,165,233,.18),transparent 30%),#020617;
+  margin:0;
+  padding:14px;
+  font-family:Arial, sans-serif;
+  background:
+    radial-gradient(circle at top right,rgba(250,204,21,.16),transparent 28%),
+    radial-gradient(circle at bottom left,rgba(56,189,248,.13),transparent 30%),
+    #020617;
+  color:#e5e7eb;
 }
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
-h1{color:#facc15;font-size:34px;margin:0;text-shadow:0 0 18px rgba(250,204,21,.45)}
-a{color:#facc15;text-decoration:none;border:1px solid rgba(250,204,21,.5);padding:10px 18px;border-radius:999px}
-.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:22px}
-.card{background:linear-gradient(145deg,rgba(15,23,42,.96),rgba(2,6,23,.98));border:1px solid rgba(56,189,248,.24);border-radius:20px;padding:16px;box-shadow:0 0 35px rgba(56,189,248,.10)}
-.main{text-align:center}
-.decision{font-size:32px;font-weight:900;margin-top:12px}
-.score{font-size:52px;font-weight:900;color:#fff;margin:12px 0}
-.tone{color:#94a3b8;font-size:18px}
-.gauge{
-  width:210px;height:112px;margin:20px auto;border-radius:260px 260px 0 0;
-  background:conic-gradient(from 180deg,#ef4444 0deg,#f97316 55deg,#eab308 105deg,#22c55e 180deg,transparent 0);
-  position:relative;overflow:hidden;
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
 }
-.gauge:after{content:"";position:absolute;bottom:0;left:28px;width:154px;height:77px;background:#020617;border-radius:190px 190px 0 0}
-.needle{position:absolute;bottom:0;left:50%;width:3px;height:95px;background:white;transform-origin:bottom center;z-index:4;box-shadow:0 0 10px white}
-.gauges{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
-.small{text-align:center}
-.small .gauge{width:150px;height:82px;margin:10px auto}
-.small .gauge:after{left:22px;width:106px;height:53px}
-.small .needle{height:70px}
-.small b{font-size:28px}
-h2{margin-top:0;color:#f8fafc}
-.bar-row{margin:12px 0}
-.bar-head{display:flex;justify-content:space-between;margin-bottom:6px;color:#cbd5e1}
-.bar{height:14px;background:#1e293b;border-radius:999px;overflow:hidden}
-.fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#f97316,#eab308,#22c55e)}
-.heat{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.tile{border-radius:18px;padding:18px;text-align:center;background:#111827;border:1px solid rgba(255,255,255,.08)}
-.tile strong{display:block;font-size:20px;margin-bottom:8px}
-.tile span{font-size:24px;font-weight:900}
-.footer{margin-top:16px;color:#94a3b8;text-align:center}
-@media(max-width:1000px){.grid{grid-template-columns:1fr}.gauges{grid-template-columns:1fr 1fr}.heat{grid-template-columns:1fr 1fr}}
+h1{margin:0;color:#facc15;font-size:30px}
+.sub{color:#94a3b8;font-size:13px;margin-top:4px}
+.back{
+  color:#facc15;
+  text-decoration:none;
+  border:1px solid rgba(250,204,21,.45);
+  padding:8px 14px;
+  border-radius:999px;
+  font-size:13px;
+}
+.layout{
+  display:grid;
+  grid-template-columns: 34% 66%;
+  gap:14px;
+}
+.card{
+  background:linear-gradient(145deg,rgba(15,23,42,.96),rgba(2,6,23,.98));
+  border:1px solid rgba(56,189,248,.22);
+  border-radius:20px;
+  padding:16px;
+  box-shadow:0 0 26px rgba(56,189,248,.08);
+}
+.main{
+  min-height:440px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.main-title{color:#94a3b8;font-size:15px;margin-bottom:8px}
+.big-decision{font-size:38px;font-weight:900;margin:10px 0;color:#facc15}
+.big-score{font-size:58px;font-weight:900;color:#fff}
+.tone{color:#94a3b8;font-size:15px;margin-top:8px}
+
+.speed{
+  width:280px;
+  height:150px;
+  border-radius:280px 280px 0 0;
+  background:conic-gradient(from 180deg,#ef4444 0deg,#f97316 55deg,#eab308 112deg,#22c55e 180deg,transparent 0);
+  position:relative;
+  overflow:hidden;
+  margin:10px auto 4px;
+}
+.speed:after{
+  content:"";
+  position:absolute;
+  bottom:0;
+  left:38px;
+  width:204px;
+  height:102px;
+  background:#020617;
+  border-radius:204px 204px 0 0;
+}
+.needle{
+  position:absolute;
+  bottom:0;
+  left:50%;
+  width:4px;
+  height:128px;
+  background:#fff;
+  transform-origin:bottom center;
+  z-index:5;
+  box-shadow:0 0 10px #fff;
+}
+.center-dot{
+  position:absolute;
+  bottom:-7px;
+  left:calc(50% - 11px);
+  width:22px;
+  height:22px;
+  background:#facc15;
+  border-radius:50%;
+  z-index:6;
+  box-shadow:0 0 16px #facc15;
+}
+
+.gauge-grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:10px;
+  margin-bottom:14px;
+}
+.mini{
+  text-align:center;
+  padding:10px;
+  border-radius:16px;
+  background:rgba(15,23,42,.8);
+  border:1px solid rgba(255,255,255,.08);
+}
+.mini-title{font-size:12px;color:#cbd5e1;margin-bottom:4px}
+.mini-value{font-size:24px;font-weight:900;color:#fff}
+.mini-bar{
+  height:7px;
+  background:#1e293b;
+  border-radius:99px;
+  overflow:hidden;
+  margin-top:7px;
+}
+.mini-fill{
+  height:100%;
+  border-radius:99px;
+  background:linear-gradient(90deg,#ef4444,#f97316,#eab308,#22c55e);
+}
+
+.two{
+  display:grid;
+  grid-template-columns: 46% 54%;
+  gap:14px;
+}
+h2{
+  margin:0 0 12px;
+  font-size:20px;
+  color:#f8fafc;
+}
+.row{margin-bottom:10px}
+.row-head{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-bottom:5px;
+  color:#cbd5e1;
+}
+.bar{
+  height:12px;
+  background:#1e293b;
+  border-radius:99px;
+  overflow:hidden;
+}
+.fill{
+  height:100%;
+  border-radius:99px;
+  background:linear-gradient(90deg,#f97316,#eab308,#22c55e);
+}
+
+.heat{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.tile{
+  min-height:82px;
+  border-radius:16px;
+  padding:10px;
+  border:1px solid rgba(255,255,255,.08);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  text-align:center;
+}
+.tile b{font-size:16px}
+.tile .flow{font-size:22px;font-weight:900;margin:5px 0}
+.tile small{color:#d1d5db}
+
+.footer{
+  text-align:center;
+  color:#64748b;
+  font-size:12px;
+  margin-top:10px;
+}
+
+@media(max-width:1200px){
+  .layout,.two{grid-template-columns:1fr}
+  .gauge-grid{grid-template-columns:repeat(3,1fr)}
+  .heat{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
+
 <body>
 
-<div class="top">
+<div class="header">
   <div>
     <h1>🧭 بوصلة الفرص</h1>
-    <div style="color:#94a3b8">مركز قرار السوق قبل الافتتاح — عدادات، سيولة، قطاعات، وخريطة أموال</div>
+    <div class="sub">مركز قرار السوق قبل الافتتاح</div>
   </div>
-  <a href="/">العودة للوحة الأداء</a>
+  <a class="back" href="/">العودة للوحة الأداء</a>
 </div>
 
-<div id="app">جاري تحميل بيانات بوصلة الفرص...</div>
+<div id="app">جاري تحميل بوصلة الفرص...</div>
 
 <script>
 function angle(v){return (Math.max(0,Math.min(100,v))*1.8)-90}
-function gauge(title,value){
- return `<div class="small card">
-  <div>${title}</div>
-  <div class="gauge"><div class="needle" style="transform:rotate(${angle(value)}deg)"></div></div>
-  <b>${value}%</b>
- </div>`
+
+function tileColor(score){
+  if(score>=80) return "rgba(34,197,94,.28)";
+  if(score>=65) return "rgba(234,179,8,.26)";
+  if(score>=50) return "rgba(249,115,22,.24)";
+  return "rgba(239,68,68,.26)";
 }
-function color(score){
- if(score>=80)return "rgba(34,197,94,.25)";
- if(score>=65)return "rgba(234,179,8,.25)";
- if(score>=50)return "rgba(249,115,22,.25)";
- return "rgba(239,68,68,.25)";
+
+function demoIfFlat(d){
+  const sectors = d.sectors || [];
+  const allFlat = sectors.length && sectors.every(s => Number(s.score) === 50 && Number(s.flow) === 0);
+  if(!allFlat) return d;
+
+  d.score = 78;
+  d.decision = {label:"شراء انتقائي", tone:"السوق جيد لكن يحتاج انتقاء", color:"yellow"};
+  d.gauges = {
+    "الاتجاه العام":82,
+    "السيولة":76,
+    "قوة السوق":71,
+    "الزخم":79,
+    "التقلب":68,
+    "ظروف الأسبوع":80
+  };
+  d.sectors = [
+    {symbol:"XLK",name:"التقنية",score:88,flow:2.4,status:"دخول قوي"},
+    {symbol:"XLC",name:"الاتصالات",score:81,flow:1.7,status:"دخول قوي"},
+    {symbol:"XLI",name:"الصناعي",score:74,flow:1.1,status:"دخول متوسط"},
+    {symbol:"XLV",name:"الصحي",score:69,flow:.6,status:"دخول متوسط"},
+    {symbol:"XLY",name:"الاستهلاكي الكمالي",score:64,flow:.2,status:"محايد"},
+    {symbol:"XLE",name:"الطاقة",score:58,flow:-.3,status:"محايد"},
+    {symbol:"XLB",name:"المواد",score:55,flow:-.5,status:"محايد"},
+    {symbol:"XLRE",name:"العقاري",score:49,flow:-.9,status:"خروج سيولة"},
+    {symbol:"XLF",name:"المالي",score:47,flow:-1.1,status:"خروج سيولة"},
+    {symbol:"XLP",name:"الاستهلاكي الأساسي",score:42,flow:-1.6,status:"خروج سيولة"},
+    {symbol:"XLU",name:"المرافق",score:36,flow:-2.2,status:"خروج سيولة"}
+  ];
+  d.demo = true;
+  return d;
 }
+
 fetch('/api/market/mood')
 .then(r=>r.json())
-.then(d=>{
- if(!d.ok){document.getElementById('app').innerHTML='<div class="card">تعذر تحميل البيانات: '+d.error+'</div>';return}
- let gauges='';
- Object.entries(d.gauges||{}).forEach(([k,v])=>gauges+=gauge(k,v));
- let sectors='';
- (d.sectors||[]).forEach(s=>{
-  sectors+=`<div class="bar-row">
-   <div class="bar-head"><span>${s.name} <small>${s.symbol}</small></span><b>${s.score}%</b></div>
-   <div class="bar"><div class="fill" style="width:${s.score}%"></div></div>
-  </div>`
- });
- let heat='';
- (d.sectors||[]).forEach(s=>{
-  heat+=`<div class="tile" style="background:${color(s.score)}">
-   <strong>${s.name}</strong><span>${s.flow>0?'+':''}${s.flow}%</span><div>${s.status}</div>
-  </div>`
- });
- document.getElementById('app').innerHTML=`
- <div class="grid">
-  <div class="card main">
-    <h2>القرار النهائي</h2>
-    <div class="gauge"><div class="needle" style="transform:rotate(${angle(d.score)}deg)"></div></div>
-    <div class="decision">${d.decision.label}</div>
-    <div class="score">${d.score}/100</div>
-    <div class="tone">${d.decision.tone}</div>
-  </div>
-  <div class="card">
-    <h2>عدادات بوصلة الفرص</h2>
-    <div class="gauges">${gauges}</div>
-  </div>
- </div>
- <div class="grid" style="margin-top:22px">
-  <div class="card"><h2>💰 دوران السيولة بين القطاعات</h2>${sectors}</div>
-  <div class="card"><h2>🗺️ خريطة الأموال</h2><div class="heat">${heat}</div></div>
- </div>
- <div class="footer">آخر تحديث: ${d.updated_at || '-'}</div>`;
+.then(raw=>{
+  let d = demoIfFlat(raw);
+
+  let gauges = "";
+  Object.entries(d.gauges || {}).forEach(([k,v])=>{
+    gauges += `
+      <div class="mini">
+        <div class="mini-title">${k}</div>
+        <div class="mini-value">${v}%</div>
+        <div class="mini-bar"><div class="mini-fill" style="width:${v}%"></div></div>
+      </div>
+    `;
+  });
+
+  let sectorBars = "";
+  (d.sectors || []).forEach(s=>{
+    sectorBars += `
+      <div class="row">
+        <div class="row-head">
+          <span>${s.name} <small>${s.symbol}</small></span>
+          <b>${s.score}%</b>
+        </div>
+        <div class="bar"><div class="fill" style="width:${s.score}%"></div></div>
+      </div>
+    `;
+  });
+
+  let heat = "";
+  (d.sectors || []).forEach(s=>{
+    heat += `
+      <div class="tile" style="background:${tileColor(s.score)}">
+        <b>${s.name}</b>
+        <div class="flow">${s.flow>0?'+':''}${s.flow}%</div>
+        <small>${s.status}</small>
+      </div>
+    `;
+  });
+
+  document.getElementById("app").innerHTML = `
+    <div class="layout">
+      <div class="card main">
+        <div class="main-title">القرار النهائي</div>
+        <div class="speed">
+          <div class="needle" style="transform:rotate(${angle(d.score)}deg)"></div>
+          <div class="center-dot"></div>
+        </div>
+        <div class="big-decision">${d.decision.label}</div>
+        <div class="big-score">${d.score}/100</div>
+        <div class="tone">${d.decision.tone}</div>
+      </div>
+
+      <div>
+        <div class="gauge-grid">${gauges}</div>
+        <div class="two">
+          <div class="card">
+            <h2>💰 دوران السيولة بين القطاعات</h2>
+            ${sectorBars}
+          </div>
+          <div class="card">
+            <h2>🗺️ خريطة الأموال</h2>
+            <div class="heat">${heat}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      آخر تحديث: ${d.updated_at || "-"} ${d.demo ? " — عرض تجريبي مؤقت حتى ربط مصدر البيانات النهائي" : ""}
+    </div>
+  `;
 })
-.catch(e=>document.getElementById('app').innerHTML='<div class="card">خطأ تحميل: '+e+'</div>');
+.catch(e=>{
+  document.getElementById("app").innerHTML = `<div class="card">خطأ في تحميل البيانات: ${e}</div>`;
+});
 </script>
 
 </body>
