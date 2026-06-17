@@ -918,10 +918,10 @@ def test_yahoo():
 
         return {
             "ok": True,
-            "empty": data.empty,
-            "rows": len(data),
-            "columns": [str(c) for c in data.columns],
-            "tail": data.tail(3).to_dict() if not data.empty else {}
+            "empty": bool(data.empty),
+            "rows": int(len(data)),
+            "columns_count": int(len(data.columns)),
+            "columns": [str(c) for c in data.columns]
         }
 
     except Exception as e:
