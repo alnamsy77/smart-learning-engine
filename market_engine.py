@@ -101,7 +101,7 @@ def _trend_score():
 def _sector_score(symbol):
     data = yf.download(symbol, period="1y", interval="1d", progress=False, auto_adjust=True)
     if data is None or data.empty:
-        return 50
+        return 50, 0
 
     close = data["Close"]
     if hasattr(close, "columns"):
@@ -109,7 +109,7 @@ def _sector_score(symbol):
     close = close.dropna()
 
     if len(close) < 80:
-        return 50
+        return 50, 0
 
     last = close.iloc[-1]
     prev5 = close.iloc[-6] if len(close) >= 6 else close.iloc[0]
