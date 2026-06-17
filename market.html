@@ -3,191 +3,205 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🧭 بوصلة الفرص</title>
+<title>مزاج السوق</title>
 
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
-  padding:14px;
-  font-family:Arial, sans-serif;
+  padding:10px;
+  font-family:Arial,sans-serif;
   background:
-    radial-gradient(circle at top right,rgba(250,204,21,.16),transparent 28%),
-    radial-gradient(circle at bottom left,rgba(56,189,248,.13),transparent 30%),
+    radial-gradient(circle at top right,rgba(250,204,21,.16),transparent 24%),
+    radial-gradient(circle at bottom left,rgba(56,189,248,.12),transparent 28%),
     #020617;
   color:#e5e7eb;
+  overflow:hidden;
 }
 .header{
+  height:58px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:12px;
 }
-h1{margin:0;color:#facc15;font-size:30px}
-.sub{color:#94a3b8;font-size:13px;margin-top:4px}
+h1{
+  margin:0;
+  color:#facc15;
+  font-size:34px;
+  font-weight:900;
+  text-shadow:0 0 18px rgba(250,204,21,.45);
+}
+.sub{color:#94a3b8;font-size:13px;margin-top:3px}
 .back{
   color:#facc15;
   text-decoration:none;
   border:1px solid rgba(250,204,21,.45);
   padding:8px 14px;
   border-radius:999px;
-  font-size:13px;
+  font-size:12px;
 }
-.layout{
+
+.screen{
+  height:calc(100vh - 70px);
   display:grid;
-  grid-template-columns: 34% 66%;
-  gap:14px;
+  grid-template-columns: 28% 34% 38%;
+  grid-template-rows: 23% 39% 38%;
+  gap:10px;
 }
+
 .card{
   background:linear-gradient(145deg,rgba(15,23,42,.96),rgba(2,6,23,.98));
-  border:1px solid rgba(56,189,248,.22);
-  border-radius:20px;
-  padding:16px;
+  border:1px solid rgba(56,189,248,.25);
+  border-radius:18px;
+  padding:12px;
   box-shadow:0 0 26px rgba(56,189,248,.08);
+  overflow:hidden;
 }
-.main{
-  min-height:440px;
+
+.top-gauges{
+  grid-column:1/4;
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:10px;
+}
+.mini{
+  background:rgba(15,23,42,.82);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  padding:10px;
+  text-align:center;
+}
+.mini-title{font-size:12px;color:#cbd5e1}
+.mini-value{font-size:28px;font-weight:900;color:#fff;margin:4px 0}
+.mini-bar{
+  height:8px;
+  border-radius:999px;
+  background:#1e293b;
+  overflow:hidden;
+}
+.mini-fill{
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#ef4444,#f97316,#eab308,#22c55e);
+}
+
+.decision{
+  grid-column:1/2;
+  grid-row:2/4;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
   text-align:center;
 }
-.main-title{color:#94a3b8;font-size:15px;margin-bottom:8px}
-.big-decision{font-size:38px;font-weight:900;margin:10px 0;color:#facc15}
-.big-score{font-size:58px;font-weight:900;color:#fff}
-.tone{color:#94a3b8;font-size:15px;margin-top:8px}
+.decision-title{font-size:15px;color:#94a3b8;margin-bottom:4px}
+.big-label{font-size:36px;font-weight:900;color:#facc15;margin-top:4px}
+.big-score{font-size:76px;font-weight:900;color:white;line-height:1}
+.tone{font-size:14px;color:#94a3b8;margin-top:8px}
 
 .speed{
-  width:280px;
-  height:150px;
-  border-radius:280px 280px 0 0;
+  width:250px;
+  height:135px;
+  border-radius:260px 260px 0 0;
   background:conic-gradient(from 180deg,#ef4444 0deg,#f97316 55deg,#eab308 112deg,#22c55e 180deg,transparent 0);
   position:relative;
   overflow:hidden;
-  margin:10px auto 4px;
+  margin:8px auto;
 }
 .speed:after{
   content:"";
   position:absolute;
   bottom:0;
-  left:38px;
-  width:204px;
-  height:102px;
+  left:34px;
+  width:182px;
+  height:91px;
   background:#020617;
-  border-radius:204px 204px 0 0;
+  border-radius:190px 190px 0 0;
 }
 .needle{
   position:absolute;
   bottom:0;
   left:50%;
   width:4px;
-  height:128px;
+  height:115px;
   background:#fff;
   transform-origin:bottom center;
   z-index:5;
-  box-shadow:0 0 10px #fff;
+  box-shadow:0 0 12px white;
 }
 .center-dot{
   position:absolute;
-  bottom:-7px;
-  left:calc(50% - 11px);
-  width:22px;
-  height:22px;
+  bottom:-8px;
+  left:calc(50% - 12px);
+  width:24px;
+  height:24px;
   background:#facc15;
   border-radius:50%;
   z-index:6;
-  box-shadow:0 0 16px #facc15;
+  box-shadow:0 0 18px #facc15;
 }
 
-.gauge-grid{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:10px;
-  margin-bottom:14px;
-}
-.mini{
-  text-align:center;
-  padding:10px;
-  border-radius:16px;
-  background:rgba(15,23,42,.8);
-  border:1px solid rgba(255,255,255,.08);
-}
-.mini-title{font-size:12px;color:#cbd5e1;margin-bottom:4px}
-.mini-value{font-size:24px;font-weight:900;color:#fff}
-.mini-bar{
-  height:7px;
-  background:#1e293b;
-  border-radius:99px;
-  overflow:hidden;
-  margin-top:7px;
-}
-.mini-fill{
-  height:100%;
-  border-radius:99px;
-  background:linear-gradient(90deg,#ef4444,#f97316,#eab308,#22c55e);
-}
-
-.two{
-  display:grid;
-  grid-template-columns: 46% 54%;
-  gap:14px;
+.sectors{
+  grid-column:2/3;
+  grid-row:2/4;
 }
 h2{
-  margin:0 0 12px;
-  font-size:20px;
+  margin:0 0 10px;
   color:#f8fafc;
+  font-size:19px;
 }
-.row{margin-bottom:10px}
+.row{margin-bottom:8px}
 .row-head{
   display:flex;
   justify-content:space-between;
-  font-size:13px;
-  margin-bottom:5px;
+  font-size:12px;
   color:#cbd5e1;
+  margin-bottom:4px;
 }
 .bar{
-  height:12px;
+  height:10px;
   background:#1e293b;
-  border-radius:99px;
+  border-radius:999px;
   overflow:hidden;
 }
 .fill{
   height:100%;
-  border-radius:99px;
+  border-radius:999px;
   background:linear-gradient(90deg,#f97316,#eab308,#22c55e);
 }
 
 .heat{
+  grid-column:3/4;
+  grid-row:2/4;
+}
+.heat-grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:10px;
+  grid-auto-rows:86px;
+  gap:9px;
 }
 .tile{
-  min-height:82px;
-  border-radius:16px;
-  padding:10px;
+  border-radius:15px;
+  padding:9px;
   border:1px solid rgba(255,255,255,.08);
   display:flex;
   flex-direction:column;
   justify-content:center;
+  align-items:center;
   text-align:center;
 }
-.tile b{font-size:16px}
-.tile .flow{font-size:22px;font-weight:900;margin:5px 0}
-.tile small{color:#d1d5db}
+.tile b{font-size:15px}
+.tile .flow{font-size:24px;font-weight:900;margin:4px 0}
+.tile small{font-size:11px;color:#e5e7eb}
 
 .footer{
+  position:fixed;
+  bottom:4px;
+  left:0;
+  right:0;
   text-align:center;
+  font-size:11px;
   color:#64748b;
-  font-size:12px;
-  margin-top:10px;
-}
-
-@media(max-width:1200px){
-  .layout,.two{grid-template-columns:1fr}
-  .gauge-grid{grid-template-columns:repeat(3,1fr)}
-  .heat{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -196,22 +210,23 @@ h2{
 
 <div class="header">
   <div>
-    <h1>🧭 بوصلة الفرص</h1>
-    <div class="sub">مركز قرار السوق قبل الافتتاح</div>
+    <h1>🧭 مزاج السوق</h1>
+    <div class="sub">مركز قرار السوق قبل الافتتاح — قراءة مختصرة للتداول اليومي</div>
   </div>
   <a class="back" href="/">العودة للوحة الأداء</a>
 </div>
 
-<div id="app">جاري تحميل بوصلة الفرص...</div>
+<div id="app">جاري تحميل مزاج السوق...</div>
 
 <script>
-function angle(v){return (Math.max(0,Math.min(100,v))*1.8)-90}
+function angle(v){return (Math.max(0,Math.min(100,Number(v)))*1.8)-90}
 
 function tileColor(score){
-  if(score>=80) return "rgba(34,197,94,.28)";
-  if(score>=65) return "rgba(234,179,8,.26)";
-  if(score>=50) return "rgba(249,115,22,.24)";
-  return "rgba(239,68,68,.26)";
+  score = Number(score);
+  if(score>=80) return "rgba(34,197,94,.30)";
+  if(score>=65) return "rgba(234,179,8,.28)";
+  if(score>=50) return "rgba(249,115,22,.25)";
+  return "rgba(239,68,68,.28)";
 }
 
 function demoIfFlat(d){
@@ -219,28 +234,28 @@ function demoIfFlat(d){
   const allFlat = sectors.length && sectors.every(s => Number(s.score) === 50 && Number(s.flow) === 0);
   if(!allFlat) return d;
 
-  d.score = 78;
+  d.score = 84.8;
   d.decision = {label:"شراء انتقائي", tone:"السوق جيد لكن يحتاج انتقاء", color:"yellow"};
   d.gauges = {
-    "الاتجاه العام":82,
-    "السيولة":76,
-    "قوة السوق":71,
-    "الزخم":79,
-    "التقلب":68,
+    "الاتجاه العام":100,
+    "السيولة":74.2,
+    "قوة السوق":64.8,
+    "الزخم":100,
+    "التقلب":85,
     "ظروف الأسبوع":80
   };
   d.sectors = [
-    {symbol:"XLK",name:"التقنية",score:88,flow:2.4,status:"دخول قوي"},
-    {symbol:"XLC",name:"الاتصالات",score:81,flow:1.7,status:"دخول قوي"},
-    {symbol:"XLI",name:"الصناعي",score:74,flow:1.1,status:"دخول متوسط"},
-    {symbol:"XLV",name:"الصحي",score:69,flow:.6,status:"دخول متوسط"},
-    {symbol:"XLY",name:"الاستهلاكي الكمالي",score:64,flow:.2,status:"محايد"},
-    {symbol:"XLE",name:"الطاقة",score:58,flow:-.3,status:"محايد"},
-    {symbol:"XLB",name:"المواد",score:55,flow:-.5,status:"محايد"},
-    {symbol:"XLRE",name:"العقاري",score:49,flow:-.9,status:"خروج سيولة"},
-    {symbol:"XLF",name:"المالي",score:47,flow:-1.1,status:"خروج سيولة"},
-    {symbol:"XLP",name:"الاستهلاكي الأساسي",score:42,flow:-1.6,status:"خروج سيولة"},
-    {symbol:"XLU",name:"المرافق",score:36,flow:-2.2,status:"خروج سيولة"}
+    {symbol:"XLK",name:"التقنية",score:85,flow:7.67,status:"دخول قوي"},
+    {symbol:"XLF",name:"المالي",score:82,flow:5.89,status:"دخول قوي"},
+    {symbol:"XLB",name:"المواد",score:78,flow:7.13,status:"دخول قوي"},
+    {symbol:"XLI",name:"الصناعي",score:76,flow:7.24,status:"دخول قوي"},
+    {symbol:"XLP",name:"الاستهلاكي الأساسي",score:70,flow:1.2,status:"دخول متوسط"},
+    {symbol:"XLY",name:"الاستهلاكي الكمالي",score:68,flow:3.27,status:"دخول متوسط"},
+    {symbol:"XLV",name:"الصحي",score:65,flow:0.89,status:"دخول متوسط"},
+    {symbol:"XLRE",name:"العقاري",score:61,flow:0.82,status:"دخول متوسط"},
+    {symbol:"XLU",name:"المرافق",score:55,flow:1.99,status:"محايد"},
+    {symbol:"XLC",name:"الاتصالات",score:42,flow:-1.68,status:"خروج سيولة"},
+    {symbol:"XLE",name:"الطاقة",score:36,flow:-7.65,status:"خروج سيولة"}
   ];
   d.demo = true;
   return d;
@@ -258,21 +273,19 @@ fetch('/api/market/mood')
         <div class="mini-title">${k}</div>
         <div class="mini-value">${v}%</div>
         <div class="mini-bar"><div class="mini-fill" style="width:${v}%"></div></div>
-      </div>
-    `;
+      </div>`;
   });
 
-  let sectorBars = "";
+  let sectors = "";
   (d.sectors || []).forEach(s=>{
-    sectorBars += `
+    sectors += `
       <div class="row">
         <div class="row-head">
           <span>${s.name} <small>${s.symbol}</small></span>
           <b>${s.score}%</b>
         </div>
         <div class="bar"><div class="fill" style="width:${s.score}%"></div></div>
-      </div>
-    `;
+      </div>`;
   });
 
   let heat = "";
@@ -282,40 +295,36 @@ fetch('/api/market/mood')
         <b>${s.name}</b>
         <div class="flow">${s.flow>0?'+':''}${s.flow}%</div>
         <small>${s.status}</small>
-      </div>
-    `;
+      </div>`;
   });
 
+  document.getElementById("app").className = "screen";
   document.getElementById("app").innerHTML = `
-    <div class="layout">
-      <div class="card main">
-        <div class="main-title">القرار النهائي</div>
-        <div class="speed">
-          <div class="needle" style="transform:rotate(${angle(d.score)}deg)"></div>
-          <div class="center-dot"></div>
-        </div>
-        <div class="big-decision">${d.decision.label}</div>
-        <div class="big-score">${d.score}/100</div>
-        <div class="tone">${d.decision.tone}</div>
-      </div>
+    <div class="top-gauges">${gauges}</div>
 
-      <div>
-        <div class="gauge-grid">${gauges}</div>
-        <div class="two">
-          <div class="card">
-            <h2>💰 دوران السيولة بين القطاعات</h2>
-            ${sectorBars}
-          </div>
-          <div class="card">
-            <h2>🗺️ خريطة الأموال</h2>
-            <div class="heat">${heat}</div>
-          </div>
-        </div>
+    <div class="card decision">
+      <div class="decision-title">القرار النهائي</div>
+      <div class="speed">
+        <div class="needle" style="transform:rotate(${angle(d.score)}deg)"></div>
+        <div class="center-dot"></div>
       </div>
+      <div class="big-label">${d.decision.label}</div>
+      <div class="big-score">${d.score}</div>
+      <div class="tone">${d.decision.tone}</div>
+    </div>
+
+    <div class="card sectors">
+      <h2>💰 دوران السيولة بين القطاعات</h2>
+      ${sectors}
+    </div>
+
+    <div class="card heat">
+      <h2>🗺️ خريطة الأموال</h2>
+      <div class="heat-grid">${heat}</div>
     </div>
 
     <div class="footer">
-      آخر تحديث: ${d.updated_at || "-"} ${d.demo ? " — عرض تجريبي مؤقت حتى ربط مصدر البيانات النهائي" : ""}
+      آخر تحديث: ${d.updated_at || "-"} ${d.demo ? " — عرض تجريبي مؤقت حتى ربط البيانات الحقيقية" : ""}
     </div>
   `;
 })
