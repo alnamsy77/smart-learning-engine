@@ -46,16 +46,24 @@ def _last(series):
 
 def _download_close(symbol, period="1y", interval="1d"):
     try:
-        data = yf.Ticker(symbol).history(
+        data = yf.download(
+            symbol,
             period=period,
             interval=interval,
+            progress=False,
             auto_adjust=True
         )
 
-        if data is None or data.empty or "Close" not in data:
+        if data is None or data.empty:
             return None
 
-        close = data["Close"].dropna()
+        close = data["Close"]
+
+        if hasattr(close, "columns"):
+            close = close.iloc[:, 0]
+
+        close = close.dropna()
+
         return close if len(close) else None
 
     except Exception:
