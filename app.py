@@ -856,3 +856,48 @@ def api_stats():
     stats = fetch_stats()
     stats["learning"] = simple_learning_summary()
     return stats
+
+
+# =========================
+# Market Mood Dashboard
+# =========================
+
+@app.get("/market", response_class=HTMLResponse)
+def market_dashboard():
+    try:
+        with open("market.html", "r", encoding="utf-8") as f:
+            return f.read()
+    except Exception as e:
+        return f"""
+        <html lang="ar" dir="rtl">
+        <body style="background:#020617;color:white;font-family:Arial;padding:30px">
+        <h1>🧭 بوصلة الفرص</h1>
+        <h2 style="color:#ef4444">تعذر فتح صفحة بوصلة الفرص</h2>
+        <pre>{str(e)}</pre>
+        <a href="/" style="color:#38bdf8">العودة للوحة الأداء</a>
+        </body>
+        </html>
+        """
+
+
+@app.get("/api/market/mood")
+def api_market_mood():
+    try:
+        from market_engine import get_market_mood
+        return get_market_mood()
+    except Exception as e:
+        return JSONResponse(
+            status_code=200,
+            content={
+                "ok": False,
+                "error": str(e),
+                "score": 0,
+                "decision": {
+                    "label": "غير متاح",
+                    "color": "red",
+                    "tone": "تعذر جلب بيانات السوق"
+                },
+                "gauges": {},
+                "sectors": []
+            }
+        )
