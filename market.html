@@ -1,1 +1,118 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🧭 بوصلة الفرص</title>
+<style>
+body{
+  margin:0;padding:24px;font-family:Arial;background:#020617;color:#e5e7eb;
+  background:radial-gradient(circle at top right,rgba(250,204,21,.18),transparent 25%),
+             radial-gradient(circle at bottom left,rgba(14,165,233,.18),transparent 30%),#020617;
+}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+h1{color:#facc15;font-size:46px;margin:0;text-shadow:0 0 18px rgba(250,204,21,.45)}
+a{color:#facc15;text-decoration:none;border:1px solid rgba(250,204,21,.5);padding:10px 18px;border-radius:999px}
+.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:22px}
+.card{background:linear-gradient(145deg,rgba(15,23,42,.96),rgba(2,6,23,.98));border:1px solid rgba(56,189,248,.24);border-radius:28px;padding:24px;box-shadow:0 0 35px rgba(56,189,248,.10)}
+.main{text-align:center}
+.decision{font-size:44px;font-weight:900;margin-top:12px}
+.score{font-size:72px;font-weight:900;color:#fff;margin:12px 0}
+.tone{color:#94a3b8;font-size:18px}
+.gauge{
+  width:260px;height:140px;margin:20px auto;border-radius:260px 260px 0 0;
+  background:conic-gradient(from 180deg,#ef4444 0deg,#f97316 55deg,#eab308 105deg,#22c55e 180deg,transparent 0);
+  position:relative;overflow:hidden;
+}
+.gauge:after{content:"";position:absolute;bottom:0;left:35px;width:190px;height:95px;background:#020617;border-radius:190px 190px 0 0}
+.needle{position:absolute;bottom:0;left:50%;width:4px;height:118px;background:white;transform-origin:bottom center;z-index:4;box-shadow:0 0 10px white}
+.gauges{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.small{text-align:center}
+.small .gauge{width:150px;height:82px;margin:10px auto}
+.small .gauge:after{left:22px;width:106px;height:53px}
+.small .needle{height:70px}
+.small b{font-size:28px}
+h2{margin-top:0;color:#f8fafc}
+.bar-row{margin:12px 0}
+.bar-head{display:flex;justify-content:space-between;margin-bottom:6px;color:#cbd5e1}
+.bar{height:14px;background:#1e293b;border-radius:999px;overflow:hidden}
+.fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#f97316,#eab308,#22c55e)}
+.heat{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tile{border-radius:18px;padding:18px;text-align:center;background:#111827;border:1px solid rgba(255,255,255,.08)}
+.tile strong{display:block;font-size:20px;margin-bottom:8px}
+.tile span{font-size:24px;font-weight:900}
+.footer{margin-top:16px;color:#94a3b8;text-align:center}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}.gauges{grid-template-columns:1fr 1fr}.heat{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
 
+<div class="top">
+  <div>
+    <h1>🧭 بوصلة الفرص</h1>
+    <div style="color:#94a3b8">مركز قرار السوق قبل الافتتاح — عدادات، سيولة، قطاعات، وخريطة أموال</div>
+  </div>
+  <a href="/">العودة للوحة الأداء</a>
+</div>
+
+<div id="app">جاري تحميل بيانات بوصلة الفرص...</div>
+
+<script>
+function angle(v){return (Math.max(0,Math.min(100,v))*1.8)-90}
+function gauge(title,value){
+ return `<div class="small card">
+  <div>${title}</div>
+  <div class="gauge"><div class="needle" style="transform:rotate(${angle(value)}deg)"></div></div>
+  <b>${value}%</b>
+ </div>`
+}
+function color(score){
+ if(score>=80)return "rgba(34,197,94,.25)";
+ if(score>=65)return "rgba(234,179,8,.25)";
+ if(score>=50)return "rgba(249,115,22,.25)";
+ return "rgba(239,68,68,.25)";
+}
+fetch('/api/market/mood')
+.then(r=>r.json())
+.then(d=>{
+ if(!d.ok){document.getElementById('app').innerHTML='<div class="card">تعذر تحميل البيانات: '+d.error+'</div>';return}
+ let gauges='';
+ Object.entries(d.gauges||{}).forEach(([k,v])=>gauges+=gauge(k,v));
+ let sectors='';
+ (d.sectors||[]).forEach(s=>{
+  sectors+=`<div class="bar-row">
+   <div class="bar-head"><span>${s.name} <small>${s.symbol}</small></span><b>${s.score}%</b></div>
+   <div class="bar"><div class="fill" style="width:${s.score}%"></div></div>
+  </div>`
+ });
+ let heat='';
+ (d.sectors||[]).forEach(s=>{
+  heat+=`<div class="tile" style="background:${color(s.score)}">
+   <strong>${s.name}</strong><span>${s.flow>0?'+':''}${s.flow}%</span><div>${s.status}</div>
+  </div>`
+ });
+ document.getElementById('app').innerHTML=`
+ <div class="grid">
+  <div class="card main">
+    <h2>القرار النهائي</h2>
+    <div class="gauge"><div class="needle" style="transform:rotate(${angle(d.score)}deg)"></div></div>
+    <div class="decision">${d.decision.label}</div>
+    <div class="score">${d.score}/100</div>
+    <div class="tone">${d.decision.tone}</div>
+  </div>
+  <div class="card">
+    <h2>عدادات بوصلة الفرص</h2>
+    <div class="gauges">${gauges}</div>
+  </div>
+ </div>
+ <div class="grid" style="margin-top:22px">
+  <div class="card"><h2>💰 دوران السيولة بين القطاعات</h2>${sectors}</div>
+  <div class="card"><h2>🗺️ خريطة الأموال</h2><div class="heat">${heat}</div></div>
+ </div>
+ <div class="footer">آخر تحديث: ${d.updated_at || '-'}</div>`;
+})
+.catch(e=>document.getElementById('app').innerHTML='<div class="card">خطأ تحميل: '+e+'</div>');
+</script>
+
+</body>
+</html>
