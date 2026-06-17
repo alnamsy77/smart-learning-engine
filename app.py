@@ -901,3 +901,31 @@ def api_market_mood():
                 "sectors": []
             }
         )
+
+
+@app.get("/api/test/yahoo")
+def test_yahoo():
+    import yfinance as yf
+
+    try:
+        data = yf.download(
+            "XLK",
+            period="1mo",
+            interval="1d",
+            progress=False,
+            auto_adjust=True
+        )
+
+        return {
+            "ok": True,
+            "empty": data.empty,
+            "rows": len(data),
+            "columns": [str(c) for c in data.columns],
+            "tail": data.tail(3).to_dict() if not data.empty else {}
+        }
+
+    except Exception as e:
+        return {
+            "ok": False,
+            "error": str(e)
+        }
