@@ -5,7 +5,7 @@ from database import (
     insert_signal,
     fetch_recent,
     fetch_stats,
-    get_learning_insights
+    fetch_learning_insights
 )
 from learning import (
     simple_learning_summary,
@@ -253,8 +253,40 @@ def admin_dashboard(request: Request):
             }}
 
             ul{{
-                line-height:2;
-            }}
+    line-height:2;
+}}
+
+.learning-grid{{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-top:15px;
+}}
+
+.learn-box{{
+    background:#0f172a;
+    border:1px solid #334155;
+    border-radius:14px;
+    padding:16px;
+}}
+
+.learn-title{{
+    color:#94a3b8;
+    font-size:13px;
+}}
+
+.learn-main{{
+    color:#facc15;
+    font-size:20px;
+    font-weight:bold;
+    margin-top:8px;
+}}
+
+.learn-rate{{
+    color:#22c55e;
+    margin-top:8px;
+    font-size:14px;
+}}
         </style>
     </head>
 
@@ -265,12 +297,31 @@ def admin_dashboard(request: Request):
         <div class="card">
             <h2>🧠 محرك التعلم الذكي</h2>
 
-           <ul>
-    <li>{best_score_title} — نسبة النجاح: {best_score_value}%</li>
-    <li>{best_market_title} — نسبة النجاح: {best_market_value}%</li>
-    <li>{best_timeframe_title} — نسبة النجاح: {best_timeframe_value}%</li>
-    <li>{best_ticker_title} — نسبة النجاح: {best_ticker_value}%</li>
-</ul>
+           <div class="learning-grid">
+    <div class="learn-box">
+        <div class="learn-title">⭐ أفضل درجة جودة</div>
+        <div class="learn-main">{best_score_title}</div>
+        <div class="learn-rate">نسبة النجاح: {best_score_value}%</div>
+    </div>
+
+    <div class="learn-box">
+        <div class="learn-title">📈 أفضل حالة سوق</div>
+        <div class="learn-main">{best_market_title}</div>
+        <div class="learn-rate">نسبة النجاح: {best_market_value}%</div>
+    </div>
+
+    <div class="learn-box">
+        <div class="learn-title">⏰ أفضل فريم</div>
+        <div class="learn-main">{best_timeframe_title}</div>
+        <div class="learn-rate">نسبة النجاح: {best_timeframe_value}%</div>
+    </div>
+
+    <div class="learn-box">
+        <div class="learn-title">🏅 أفضل سهم / عملة</div>
+        <div class="learn-main">{best_ticker_title}</div>
+        <div class="learn-rate">نسبة النجاح: {best_ticker_value}%</div>
+    </div>
+</div>
         </div>
 
         <div class="card">
