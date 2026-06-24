@@ -5,7 +5,7 @@ from database import (
     insert_signal,
     fetch_recent,
     fetch_stats,
-    fetch_learning_insights
+    get_learning_insights
 )
 from learning import (
     simple_learning_summary,
