@@ -486,3 +486,24 @@ def get_learning_insights():
     conn.close()
 
     return rows
+def fetch_learning_insights():
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            insight_key,
+            insight_type,
+            title,
+            value,
+            details
+        FROM learning_insights
+        ORDER BY id ASC;
+    """)
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return rows
