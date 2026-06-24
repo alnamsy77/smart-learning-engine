@@ -204,7 +204,7 @@ def admin_dashboard(request: Request):
         for item in insights
     }
 
-    best_score = insight_map.get("best_score_range", {})
+    best_score = insight_map.get("best_score", {})
     best_market = insight_map.get("best_market_state", {})
     best_timeframe = insight_map.get("best_timeframe", {})
     best_ticker = insight_map.get("best_ticker", {})
